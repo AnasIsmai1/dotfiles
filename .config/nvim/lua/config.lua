@@ -56,7 +56,7 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increa
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
 
 -- Remove or Sortt Import in ts files
-vim.keymap.set('n', '<leader>o', '<cmd>OrganizeImports<CR>', { desc="Organize Imports within TS files"})
+vim.keymap.set('n', '<leader>o', '<cmd>OrganizeImports<CR>', { desc = "Organize Imports within TS files" })
 
 -- Set the line number relative to the current line
 vim.opt.relativenumber = true
@@ -77,7 +77,7 @@ vim.api.nvim_set_hl(0, "SignColumn", { fg = "Grey" })
 --vim.keymap.set('n', '<c-j>', ':wincmd j<CR>', {silent = true, desc="Navigate Down"})
 --vim.keymap.set('n', '<c-h>', ':wincmd h<CR>', {silent = true, desc="Navigate Left"})
 
-vim.opt.wrap = false
+vim.opt.wrap = true
 
 -- search settings
 vim.opt.smartcase = true  -- ignore case when searching

@@ -9,7 +9,7 @@ return {
   config = function()
     local lint = require("lint")
     local eslint = lint.linters.eslint_d
-    local pylint = lint.linters.pylint
+    -- local pylint = lint.linters.pylint
     local cpplint = lint.linters.cpplint
 
     lint.linters_by_ft = {
@@ -30,9 +30,8 @@ return {
       end,
     })
 
-    -- pylint.args = {
-    --   'disable=missing-docstring',
-    -- }
+    -- pylint.cmd = "pylint" -- ensures pylint is installed
+    -- pylint.stdin = false
 
     cpplint.args = {
       "-filter",
@@ -52,7 +51,17 @@ return {
       end,
     }
 
-    vim.keymap.set("n", "<leader>l", function()
+    local lint_progress = function()
+      local linters = require("lint").get_running()
+      if #linters == 0 then
+        return "󰦕"
+      end
+      return "󱉶 " .. table.concat(linters, ", ")
+    end
+
+    vim.keymap.set('n', '<leader>lg', lint_progress(), { desc = "Get All available running linters"})
+
+    vim.keymap.set("n", "<leader>ll", function()
       lint.try_lint()
     end, { desc = "Lint file" })
   end,

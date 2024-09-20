@@ -17,14 +17,14 @@ return {
         lua = { "stylua" },
         cpp = { "clang-format" },
         python = { "black", "isort" },
+      },
+      format_on_save = {
+        lsp_fallback = true,
+        async = true,
+        timeout_ms = 500,
       }
     })
 
-    format_on_save = {
-      lsp_fallback = true,
-      async = true,
-      timeout_ms = 500,
-    }
 
     vim.keymap.set({ 'n', 'v' }, '<leader>p', function ()
       conform.format({

@@ -7,6 +7,8 @@ return {
     config = function()
       local mason_tool_installer = require("mason-tool-installer")
 
+      require("mason").setup()
+
       mason_tool_installer.setup({
         ensure_installed = {
           "prettier",
@@ -18,7 +20,6 @@ return {
         }
       })
 
-      require("mason").setup()
       vim.keymap.set("n", "<leader>cm", ":Mason<CR>", { silent = true })
     end,
   },
@@ -60,6 +61,26 @@ return {
         "lua_ls",
       })
 
+      vim.diagnostic.config({
+        virtual_text = {
+          prefix = function(diagnostic)
+            -- You can customize icons for different severity levels
+            local icons = {
+              [vim.diagnostic.severity.ERROR] = '✘',
+              [vim.diagnostic.severity.WARN]  = ' ',
+              [vim.diagnostic.severity.HINT]  = ' ',
+              [vim.diagnostic.severity.INFO]  = ' ',
+            }
+            return icons[diagnostic.severity] or ''
+          end,
+          spacing = 4,        -- Adjust spacing between the icon and the message
+        },
+        signs = true,         -- Show signs in the sign column
+        update_in_insert = false, -- Update diagnostics in insert mode
+        underline = true,     -- Underline the line with an error
+        severity_sort = true, -- Sort diagnostics by severity
+      })
+
       -- Custom keybindings for LSP
       lsp.on_attach(function(_, bufnr)
         local opts = { buffer = bufnr, remap = false }
@@ -68,9 +89,11 @@ return {
         vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
         vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
         vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
-        vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "code action", buffer = bufnr, remap = true })
+        vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
+          { desc = "code action", buffer = bufnr, remap = true })
         vim.keymap.set("n", "<leader>sn", vim.lsp.buf.rename, opts)
       end)
+
 
       local function organize_imports()
         local params = {
@@ -84,6 +107,14 @@ return {
 
       vim.api.nvim_set_keymap('n', '<leader>o', ':OrganizeImports<CR>',
         { noremap = true, silent = true, desc = "Organize Imports within TS files" })
+
+      -- Define icons for LSP diagnostics
+      local signs = { Error = "✘", Warn = " ", Hint = " ", Info = " " }
+
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+      end
 
       -- Finalize the LSP setup
       lsp.setup({})

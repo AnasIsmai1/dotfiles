@@ -8,20 +8,23 @@ return {
   },
   opts = { silent = true, noremap = true },
   keys = {
-    { '<leader>ee',
+    {
+      '<leader>ee',
       '<cmd>Neotree filesystem toggle right<cr>',
       opts,
-      desc="Neotree Explorer Toggle",
+      desc = "Neotree Explorer Toggle",
     },
-    { '<leader>eg',
+    {
+      '<leader>eg',
       '<cmd>Neotree git_status toggle right<cr>',
       opts,
-      desc="Git Explorer",
+      desc = "Git Explorer",
     },
-    { '<leader>eb',
+    {
+      '<leader>eb',
       '<cmd>Neotree buffers toggle right<cr>',
       opts,
-      desc="Buffers Explorer",
+      desc = "Buffers Explorer",
     },
   },
   config = function()
@@ -38,6 +41,20 @@ return {
         enable = true,
         ignore = true,
         timeout = 500,
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+          expander_collapsed = "",
+          expander_expanded = "",
+          expander_highlight = "NeoTreeExpander",
+        },
+        git_status = {
+          symbols = {
+            unstaged = "󰄱",
+            staged = "󰱒",
+          },
+        },
       },
       view = {
         width = 30,
