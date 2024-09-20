@@ -1,0 +1,24 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = AnasIsmai1
+	email = 174011704+AnasIsmai1@users.noreply.github.com
+[core]
+	editor = nvim
+[init]
+	defaultBranch = main
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	side-by-side = true
+
+[merge]
+	confilctstyle = diff3

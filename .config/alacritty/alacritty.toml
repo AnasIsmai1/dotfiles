@@ -1,0 +1,40 @@
+import = [
+  # "~/.config/alacritty/alacritty-theme/themes/catppuccin_mocha.toml"
+  "~/.config/alacritty/alacritty-theme/themes/gruvbox.toml"
+]
+
+[env]
+TERM = "xterm-256color"
+
+[window]
+decorations = "none" 
+
+opacity = 0.95
+
+dynamic_title = false
+
+blur = true
+
+option_as_alt = "Both"
+
+[font]
+
+size = 9
+
+normal.family = "MesloLGS Nerd Font"
+normal.style = "Medium"
+
+bold.family = "MesloLGS Nerd Font"
+bold.style = "Bold"
+
+italic.family = "MesloLGS Nerd Font"
+italic.style = "Italic Medium"
+
+[selection]
+
+save_to_clipboard = true
+
+
+[cursor]
+
+style.shape = "Block"
