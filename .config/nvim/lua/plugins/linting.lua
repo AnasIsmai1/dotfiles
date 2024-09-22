@@ -15,8 +15,8 @@ return {
     lint.linters_by_ft = {
       javascript = { "eslint_d" },
       typescript = { "eslint_d" },
-      scss = { "stylelint" },
-      css = { "stylelint" },
+      -- scss = { "stylelint" },
+      -- css = { "stylelint" },
       python = { "pylint" },
       cpp = { "cpplint" },
     }
@@ -59,7 +59,7 @@ return {
       return "󱉶 " .. table.concat(linters, ", ")
     end
 
-    vim.keymap.set('n', '<leader>lg', lint_progress(), { desc = "Get All available running linters"})
+    vim.keymap.set('n', '<leader>lg', lint_progress(), { desc = "Get All available running linters" })
 
     vim.keymap.set("n", "<leader>ll", function()
       lint.try_lint()

@@ -12,6 +12,7 @@ return {
       mason_tool_installer.setup({
         ensure_installed = {
           "prettier",
+          "stylelint",
           "stylua",
           "eslint_d",
           "isort",
@@ -73,12 +74,12 @@ return {
             }
             return icons[diagnostic.severity] or ''
           end,
-          spacing = 4,        -- Adjust spacing between the icon and the message
+          spacing = 4,            -- Adjust spacing between the icon and the message
         },
-        signs = true,         -- Show signs in the sign column
+        signs = true,             -- Show signs in the sign column
         update_in_insert = false, -- Update diagnostics in insert mode
-        underline = true,     -- Underline the line with an error
-        severity_sort = true, -- Sort diagnostics by severity
+        underline = true,         -- Underline the line with an error
+        severity_sort = true,     -- Sort diagnostics by severity
       })
 
       -- Custom keybindings for LSP

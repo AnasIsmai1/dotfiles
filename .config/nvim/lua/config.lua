@@ -99,3 +99,6 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.title = true
 vim.opt.hlsearch = true
+
+-- autoreload on file changes
+vim.opt.autoread = true
