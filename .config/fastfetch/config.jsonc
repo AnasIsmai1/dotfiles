@@ -117,7 +117,7 @@
     "break",
     {
       "type": "colors",
-      "paddingLeft": 15,
+      "paddingLeft": 18,
       "symbol": "circle",
       "block": {
         "width": 30
