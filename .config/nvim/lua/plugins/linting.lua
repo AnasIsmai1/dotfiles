@@ -15,6 +15,7 @@ return {
     lint.linters_by_ft = {
       javascript = { "eslint_d" },
       typescript = { "eslint_d" },
+      sh = { "shellcheck" },
       -- scss = { "stylelint" },
       -- css = { "stylelint" },
       python = { "pylint" },
