@@ -134,6 +134,8 @@ alias cat="batcat"
 
 alias ls="eza --long --git --color=always --group-directories-first  --icons --no-user --no-time --no-permissions --no-filesize"
 
+alias lg="la --grid"
+
 alias fzf="fzf --reverse"
 
 # alias where="pwd"
@@ -147,6 +149,8 @@ alias pipes=~/pipes.sh/pipes.sh
 alias poly=~/.config/polybar/launch_polybar.sh
  
 alias power=~/.config/rofi/rofi-powermenu.sh
+
+alias history="histdb | fzf" 
 
 
 #eval `dircolors /home/kratos/.dir_colors/dircolors`
@@ -164,3 +168,6 @@ eval "$(zoxide init --cmd cd zsh)"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 PATH=~/.console-ninja/.bin:$PATH
+
+# Created by `pipx` on 2024-09-22 12:21:35
+export PATH="$PATH:/home/kratos/.local/bin"
