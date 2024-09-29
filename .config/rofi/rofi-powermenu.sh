@@ -10,7 +10,7 @@ case "$chosen" in
 	"󰜉 Restart")
 		reboot ;;
 	"  Sleep")
-		i3lock && sleep 10 && systemctl suspend ;;
+		i3lock && systemctl suspend ;;
 	*)
 		echo "Invalid option selected: $chosen";	exit 1 ;;
 esac 
