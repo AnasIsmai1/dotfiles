@@ -13,6 +13,7 @@ set $mod Mod4
 exec --no-startup-id ~/.config/i3/i3-battery-popup/i3-battery-popup -m 'Plug it in you bastard!' -n 
 exec_always --no-startup-id ~/.config/i3/i3-alternating-layout/alternating_layouts.py
 exec_always --no-startup-id picom -b
+exec_always --no-startup-id ~/scripts/startup.sh
 exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 exec_always feh --bg-fill ~/Pictures/Wallpapers/wallpaper_gruv.jpg
@@ -202,9 +203,10 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # keybinding to lock screen
-bindsym $mod+Ctrl+l exec "i3lock -c 000000"
+# bindsym $mod+Ctrl+l exec "i3lock -c 000000"
+bindsym $mod+shift+x exec betterlockscreen -l dim
 # keybinding to suspend system
-bindsym $mod+Ctrl+s exec --no-startup-id i3lock && systemctl suspend
+bindsym $mod+Ctrl+s exec --no-startup-id betterlockscreen -l dim && systemctl suspend
 
 bindsym $mod+r mode "resize"
 
