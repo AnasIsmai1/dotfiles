@@ -6,11 +6,14 @@ fastfetch
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+#
+# ZSH_THEME="powerlevel10k/powerlevel10k"
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+eval "$(starship init zsh)"
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -35,7 +38,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+HYPHEN_INSENSITIVE="true"
 
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
@@ -102,11 +105,11 @@ autoload -Uz add-zsh-hook
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+ if [[ -n $SSH_CONNECTION ]]; then
+   export EDITOR='vim'
+ else
+   export EDITOR='nvim'
+ fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -150,8 +153,24 @@ alias poly=~/.config/polybar/launch_polybar.sh
  
 alias power=~/.config/rofi/rofi-powermenu.sh
 
-alias history="histdb | fzf" 
+alias history="histdb | fzf | awk '{for(i=4; i<=NF; i++) printf $i " "; print ""}' | pbcopy" 
 
+alias td="tmux detach"
+alias ta="tmux attach"
+
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+
+alias mv="mv -i"
+alias cp="cp -i"
+alias rm="rm -i"
+alias mkdir="mkdir -pv"
+
+alias df="df -h"
+alias du="du -sh * 2>/dev/null"
+alias update="sudo apt-get update"
+alias install="sudo apt-get install"
+alias upgrade="sudo apt-get update && sudo apt-get upgrade -y"
 
 #eval `dircolors /home/kratos/.dir_colors/dircolors`
 
@@ -160,14 +179,14 @@ printLine() {
 }
 
 
-#eval "$(starship init bash)"
-#eval "$(fzf init bash)"
 eval "$(zoxide init --cmd cd zsh)" 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 PATH=~/.console-ninja/.bin:$PATH
 
 # Created by `pipx` on 2024-09-22 12:21:35
 export PATH="$PATH:/home/kratos/.local/bin"
+# source /home/kratos/.cargo/env
+source ~/.profile
