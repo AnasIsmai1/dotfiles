@@ -1,6 +1,6 @@
 import = [
-  # "~/.config/alacritty/alacritty-theme/themes/catppuccin_mocha.toml"
-  "~/.config/alacritty/alacritty-theme/themes/gruvbox.toml"
+  "~/.config/alacritty/alacritty-theme/themes/catppuccin_mocha.toml"
+  # "~/.config/alacritty/alacritty-theme/themes/gruvbox.toml"
 ]
 
 [env]
@@ -21,17 +21,16 @@ option_as_alt = "Both"
 
 size = 9
 
-normal.family = "MesloLGS Nerd Font"
+normal.family = "JetBrains Mono"
 normal.style = "Medium"
 
-bold.family = "MesloLGS Nerd Font"
+bold.family = "JetBrains Mono"
 bold.style = "Bold"
 
-italic.family = "MesloLGS Nerd Font"
+italic.family = "JetBrains Mono"
 italic.style = "Italic Medium"
 
 [selection]
-
 save_to_clipboard = true
 
 
