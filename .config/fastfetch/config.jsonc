@@ -60,7 +60,8 @@
     {
       "key": "     TERMINAL",
       "keyColor": "blue",
-      "type": "terminal"
+      "type": "terminal",
+      "format": "{5}"
     },
     {
       "key": "    󰊠 PACKAGES",
