@@ -12,6 +12,7 @@
 	defaultBranch = main
 [core]
 	pager = delta
+	autocrlf = input
 
 [interactive]
 	diffFilter = delta --color-only
