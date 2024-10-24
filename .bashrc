@@ -155,3 +155,4 @@ PATH=~/.console-ninja/.bin:$PATH
 
 . /etc/profile.d/bash_completion.sh
 set -o vi
+. "$HOME/.cargo/env"
