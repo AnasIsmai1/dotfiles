@@ -1,0 +1,23 @@
+[[session]]
+name = "portfolio"
+path="~/Desktop/Nuclear Codes/Angular-Practice/portfolio"
+startup_command = "nvim -c ':Telescope find_files'"
+
+[[session]]
+name="dotfiles"
+path="~/dotfiles"
+startup_command = "v"
+
+[[session]]
+name="nvim"
+path="~/dotfiles/.config/nvim/"
+startup_command = "v"
+
+[[session]]
+name="Assignment"
+path= "~/Desktop/Anas/SEM-II/IP/assignments/"
+
+[[session]]
+name="Tmux Config"
+path = "~/"
+startup_command = "v .tmux.conf"
