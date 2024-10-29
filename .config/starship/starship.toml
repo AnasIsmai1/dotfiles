@@ -1,0 +1,75 @@
+# Print a new line at the start of the prompt
+add_newline = true
+
+format = """$directory
+$battery$character"""
+
+right_format = """$all"""
+command_timeout = 250
+
+# Replaces the default "❯" symbol in the prompt with "➜"
+[character]                             # The name of the module we are configuring is "character"
+# success_symbol = "[ ](bold green)"      # The "success_symbol" segment is being set to "➜" with the color "bold green"
+# error_symbol = "[ ](bold red)"      # The "success_symbol" segment is being set to "➜" with the color "bold green"
+# vicmd_symbol = "[ ](bold green)"
+
+[hostname]
+ssh_only = true
+style = 'bold dimmed blue'
+
+# Disable the package module, hiding it from the prompt completely
+# It is enabled for testing purposes
+[package]
+disabled = true
+
+##Add the following below the file
+[battery]
+full_symbol = "🔋 "
+charging_symbol = "⚡️ "
+discharging_symbol = "💀 "
+
+##The display configuration option is used to define when the battery indicator should be shown (threshold) and what it looks like (style).
+[[battery.display]]
+threshold = 10
+style = "bold red"
+
+[[battery.display]]  # "bold yellow" style when capacity is between 10% and 30%
+threshold = 30
+style = "bold yellow"
+
+[directory]
+# home_symbol=""
+truncation_symbol = '.../'
+
+[directory.substitutions]
+'~/Desktop/Nuclear Codes' = 'Nuclear Codes'
+'~/anime' = "Anime"
+# '~' = "🏠"
+
+[golang]
+format = '[ $version ](bold cyan)'
+
+[nodejs]
+format = '[ $version ](bold green)'
+
+[python]
+format = '[ $version ](bold yellow)'
+
+[php]
+format = '[  $version ](bold purple)'
+
+[custom.cpp]
+# command = "echo  d=$(g++ --version | head -n ) d=${d#*)} && d=${d#* } && echo $d"
+command =  "gcc --version | head -n 1 | awk -F' ' '{print $NF}'"
+symbol = ' '
+style = 'bold blue'
+format = '[$symbol(v$output) ]($style)'
+detect_extensions = ['cpp']
+
+[custom.zsh]
+description = 'Show current time'
+command = 'echo "  $(date +%H:%M) "'
+symbol = ''
+format = ' [$symbol($output) ]($style)'
+style = 'bold yellow'
+when = false
