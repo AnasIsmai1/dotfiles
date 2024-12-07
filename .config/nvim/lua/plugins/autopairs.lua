@@ -13,12 +13,12 @@ return {
       ts_config = {
         lua = { "string" }, -- it will not add a pair on that treesitter node
         javascript = { "template_string" },
-        java = false,   -- don't check treesitter on java
+        java = false,       -- don't check treesitter on java
       },
       disable_filetype = { "TelescopePrompt" },
       fast_wrap = {
         map = "<M-e>",
-        chars = { "{", "[", "(", '"', "'" },
+        chars = { "{", "[", "(", '"', "'", "<" },
         pattern = [=[[%'%"%>%]%)%}%,]]=],
         end_key = "$",
         before_key = "h",
@@ -35,6 +35,5 @@ return {
     local cmp = require("cmp")
 
     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-
   end,
 }
