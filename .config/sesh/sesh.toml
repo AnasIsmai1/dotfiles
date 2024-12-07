@@ -1,9 +1,4 @@
 [[session]]
-name = "portfolio"
-path="~/Desktop/Nuclear Codes/Angular-Practice/portfolio"
-startup_command = "nvim -c ':Telescope find_files'"
-
-[[session]]
 name="dotfiles"
 path="~/dotfiles"
 startup_command = "v"
@@ -18,6 +13,30 @@ name="Assignment"
 path= "~/Desktop/Anas/SEM-II/IP/assignments/"
 
 [[session]]
-name="Tmux Config"
+name="tmux config"
 path = "~/"
 startup_command = "v .tmux.conf"
+
+[[session]]
+name="Anime"
+path = "~/anime/"
+startup_command = "tmux rename-window view && tmux neww && tmux rename-window download && clear && tmux swapw -t view"
+
+[[session ]]
+name="sesh config"
+path="~/.config/sesh/"
+startup_command="l"
+
+[[session]]
+name="React"
+path="~/Desktop/Nuclear Codes/react-practice/"
+startup_command="tmux rename-window host && tmux neww 'nvim'"
+
+[[session]]
+name="Real_Estate"
+path="~/Desktop/Nuclear Codes/codesinc/frontendzahrarealestate/"
+
+[[session]]
+name = "portfolio"
+path="~/Desktop/Nuclear Codes/Angular-Practice/portfolio"
+startup_command = "tmux rename-window code && tmux neww && tmux swapw -t code && nvim -c ':Telescope find_files' && tmux swapw -t zsh && tmux rename-window term && clear && ng s""
