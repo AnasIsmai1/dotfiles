@@ -3,6 +3,9 @@ return {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter" },
     dependencies = {
+      -- "tailwind-tools", -- to enabled tailwind color highlight
+      -- "onsails/lspkind-nvim", -- to enabled tailwind color highlight
+      -- "Jezda1337/cmp_bootstrap",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -49,6 +52,11 @@ return {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
         },
+        -- formatting = {
+        --   format = require("lspkind").cmp_format({
+        --     before = require("tailwind-tools.cmp").lspkind_format
+        --   }),
+        -- },
         mapping = cmp.mapping.preset.insert({
           ["<C-j>"] = cmp.mapping.select_next_item(),
           ["<C-k>"] = cmp.mapping.select_prev_item(),
@@ -59,11 +67,16 @@ return {
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
         }),
         sources = cmp.config.sources({
+          -- { name = "bootstrap" },
+          { name = "codeium" },
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "path" },
           { name = "buffer" },
         }),
+        experimental = {
+          ghost_text = true -- this feature conflict with copilot.vim's preview.
+        }
       })
     end,
   },
