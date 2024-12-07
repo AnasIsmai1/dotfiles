@@ -1,3 +1,5 @@
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/home/kratos/.zsh/completions:"* ]]; then export FPATH="/home/kratos/.zsh/completions:$FPATH"; fi
 printf "\n"
 printf "\n"
 fastfetch
@@ -153,10 +155,12 @@ alias poly=~/.config/polybar/launch_polybar.sh
  
 alias power=~/.config/rofi/rofi-powermenu.sh
 
-alias history="histdb | fzf | awk '{for(i=4; i<=NF; i++) printf $i " "; print ""}' | pbcopy" 
+# alias history="histdb | fzf | awk '{for(i=4; i<=NF; i++) printf $i " "; print ""}' | pbcopy" 
 
+# TMUX
 alias td="tmux detach"
 alias ta="tmux attach"
+alias t="tmux"
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
@@ -171,6 +175,11 @@ alias du="du -sh * 2>/dev/null"
 alias update="sudo apt-get update"
 alias install="sudo apt-get install"
 alias upgrade="sudo apt-get update && sudo apt-get upgrade -y"
+
+alias run=~/scripts/run
+alias updates=~/scripts/update
+
+# alias sf="loc=$(echo -e | ls | gum filter) && cd $loc"
 
 #eval `dircolors /home/kratos/.dir_colors/dircolors`
 
@@ -190,3 +199,6 @@ PATH=~/.console-ninja/.bin:$PATH
 export PATH="$PATH:/home/kratos/.local/bin"
 # source /home/kratos/.cargo/env
 source ~/.profile
+PATH="$HOME/.cargo/bin/kanata:$PATH"
+alias doomt='terminal-doom/zig-out/bin/terminal-doom'
+. "/home/kratos/.deno/env"
