@@ -2,6 +2,7 @@ return {
   {
     'ellisonleao/carbon-now.nvim',
     lazy = true,
+    enabled = false,
     cmd = 'CarbonNow',
     opts = {}
   },
