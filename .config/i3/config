@@ -206,7 +206,7 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # keybinding to lock screen
-# bindsym $mod+Ctrl+l exec "i3lock -c 000000"
+bindsym $mod+Ctrl+l exec "i3lock -c 000000"
 bindsym $mod+shift+x exec betterlockscreen -l dim
 # keybinding to suspend system
 bindsym $mod+Ctrl+s exec --no-startup-id betterlockscreen -l dim && systemctl suspend
