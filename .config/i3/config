@@ -26,7 +26,7 @@ bindsym $mod+space exec rofi -show combi
 # is used in the bar {} block below.
 font pango:MesloLGS Nerd Font Mono 14
 
-for_window [class=".*"] border pixel 6
+for_window [class=".*"] border pixel 4
 for_window [floating] border pixel 5
 for_window [class="alacritty"] floating enable
 for_window [class="Battery Warning"] sticky enable
