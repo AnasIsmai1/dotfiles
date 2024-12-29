@@ -177,6 +177,7 @@ alias install="sudo apt-get install"
 alias upgrade="sudo apt-get update && sudo apt-get upgrade -y"
 
 alias run=~/scripts/run
+alias show=~/scripts/show
 alias updates=~/scripts/update
 
 # alias sf="loc=$(echo -e | ls | gum filter) && cd $loc"
