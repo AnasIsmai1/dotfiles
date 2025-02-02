@@ -15,7 +15,10 @@ return {
     lint.linters_by_ft = {
       javascript = { "eslint_d" },
       typescript = { "eslint_d" },
+      javascriptreact = { "eslint_d" },
+      typescriptreact = { "eslint_d" },
       sh = { "shellcheck" },
+      go = { "djlint" },
       -- scss = { "stylelint" },
       -- css = { "stylelint" },
       python = { "pylint" },
@@ -33,6 +36,10 @@ return {
 
     -- pylint.cmd = "pylint" -- ensures pylint is installed
     -- pylint.stdin = false
+    -- pylint.append_fname = true -- Ensures file name is appended
+    -- pylint.args = {
+    -- '--disable=C0103' -- Disable naming convention warning
+    -- }
 
     cpplint.args = {
       "-filter",
@@ -50,6 +57,8 @@ return {
       function()
         return vim.api.nvim_buf_get_name(0)
       end,
+      "--rule",
+      "no-unused-vars:off"
     }
 
     local lint_progress = function()
@@ -60,6 +69,7 @@ return {
       return "󱉶 " .. table.concat(linters, ", ")
     end
 
+    vim.keymap.set('n', '<leader>l', '', { desc = "Linters" })
     vim.keymap.set('n', '<leader>lg', lint_progress(), { desc = "Get All available running linters" })
 
     vim.keymap.set("n", "<leader>ll", function()
