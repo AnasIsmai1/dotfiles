@@ -9,6 +9,12 @@ return {
   opts = { silent = true, noremap = true },
   keys = {
     {
+      '<leader>e',
+      '',
+      opts,
+      desc = "Explorer",
+    },
+    {
       '<leader>ee',
       '<cmd>Neotree filesystem toggle right<cr>',
       opts,

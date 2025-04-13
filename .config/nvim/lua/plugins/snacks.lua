@@ -5,14 +5,14 @@ return {
     ---@type snacks.Config
     opts = {
         bigfile = { enabled = true },
-        dashboard = { enabled = true },
+        dashboard = { enabled = false },
         notifier = {
             enabled = true,
             timeout = 3000,
         },
         quickfile = { enabled = true },
         statuscolumn = { enabled = true },
-        words = { enabled = true },
+        words = { enabled = false },
         styles = {
             notification = {
                 wo = { wrap = true } -- Wrap notifications
