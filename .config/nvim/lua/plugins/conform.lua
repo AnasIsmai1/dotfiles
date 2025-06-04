@@ -21,6 +21,7 @@ return {
                 lua = { "stylua" },
                 cpp = { "clang-format" },
                 python = { "black", "isort" },
+                sql = { "sqlfmt" },
             },
             format_after_save = {
                 lsp_fallback = true,

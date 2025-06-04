@@ -11,7 +11,7 @@
 
 set $mod Mod4
 exec --no-startup-id ~/.config/i3/i3-battery-popup/i3-battery-popup -m 'Plug it in you bastard!' -n 
-exec --no-startup-id ~/.config/i3/i3-battery-popup/i3-battery-popup -m "Battery's Full" -n -L 99%
+# exec --no-startup-id ~/.config/i3/i3-battery-popup/i3-battery-popup -m "Battery's Full" -n -L 99%
 exec --no-startup-id ~/.config/i3/i3-battery-popup/i3-battery-popup -m 'Shits about to go down' -n -L 5% 
 exec --no-startup-id ~/.config/i3/i3-battery-popup/i3-battery-popup -m 'Too Late' -n -L 3% 
 exec_always --no-startup-id ~/.config/i3/i3-alternating-layout/alternating_layouts.py
@@ -19,7 +19,7 @@ exec_always --no-startup-id picom -b
 exec_always --no-startup-id ~/scripts/startup.sh
 exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
-exec_always feh --bg-fill ~/Pictures/Wallpapers/wallpaper_astro.png
+exec_always feh --bg-fill ~/Pictures/Wallpapers/split\ ken\ kaneki.png
 bindsym $mod+space exec rofi -show combi
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -78,7 +78,7 @@ tiling_drag modifier titlebar
 
 # start a terminal
 #bindsym $mod+Return exec i3-sensible-terminal # runs the default terminal
-bindsym $mod+Return exec kitty --single-instance 
+bindsym $mod+Return exec ghostty
 
 # Adjust Brightness
 # Prequisite: Light;
@@ -95,6 +95,10 @@ bindsym $mod+d exec --no-startup-id dmenu_run
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+
+# Multi-Monitor display
+set $fm eDP-1
+set $fm HDMI-1
 
 
 ## Screenshots
@@ -233,18 +237,15 @@ mode "resize" {
         bindsym Right resize grow width 10 px or 10 ppt
 
         # back to normal: Enter or Escape or $mod+r
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+        bindsym Return mode "default" --single-instance        bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
 
+# class                 border    backgr.    text       indicator     child_border
+client.focused          #b96666   #b96666    #ffffff    #b96666       #b96666
+client.focused_inactive #282828   #282828    #b96666    #282828       #282828
+client.unfocused        #1a1a1a   #1a1a1a    #a63e3e    #1a1a1a       #1a1a1a
+client.urgent           #8b4e4e   #b96666    #ffffff    #b96666       #b96666
+client.placeholder      #000000   #1a1a1a    #b96666    #000000       #1a1a1a
 
-# class                 border  backgr. text    indicator child_border
-client.focused          #565f89 #565f89 #fbf1c7 #565f89   #565f89 
-client.focused_inactive #282828 #282828 #fbf1c7 #282828   #282828  
-client.unfocused        #282828 #282828 #fbf1c7 #282828   #282828  
-client.urgent           #2f343a #ff4499 #ffffff #ff4499   #ff4499 
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-
-client.background       #ffffff
-
+client.background       #1a1a1a

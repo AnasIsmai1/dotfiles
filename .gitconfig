@@ -9,8 +9,15 @@
 [core]
 	editor = nvim
 [init]
-	defaultBranch = main
+	defaultBranch = dev
+[status]
+    branch = true
+    showStash = true
+    showUntrackedFiles = all
 [core]
+    compression = 9
+    whitespace = error
+    preloadindex = true
 	pager = delta
 	autocrlf = input
 
@@ -26,13 +33,25 @@
   light = false
 
 [merge]
-	confilctstyle = diff3
+	conflictstyle = diff3
+
+[commit]    
+	gpgSign = false
+    template = ~/.config/git/template
 
 [diff]
   colorMoved = default
-[credential "https://github.com"]
+[credential "url.ssh://git@github.com/.insteadOf"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+    helper = !/usr/bin/gh auth git-credential
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+
+[url "git@github.com:AnasIsmai1/"]
+    insteadOf = "anas:"
+
+[url "git@github.com:"]
+    insteadOf = "gh:"

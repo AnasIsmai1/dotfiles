@@ -23,8 +23,8 @@ vim.keymap.set({ "n", "v" }, "<leader>q", ":qa<CR>", { silent = true, desc = "sa
 vim.keymap.set("i", "kj", "<ESC>", { desc = "Enter and Exit normal mode" })
 
 -- Map <Tab>/<S-Tab> to indent/unindent the current line in normal mode
-vim.keymap.set("n", "<Tab>", ":normal! >>ll<CR>", { noremap = true, silent = true, desc = "Tab" })
-vim.keymap.set("n", "<S-Tab>", ":normal! <<hh<CR>", { noremap = true, silent = true, desc = "Un-Tab" })
+vim.keymap.set("n", "<Tab>", ":normal! >>llll<CR>", { noremap = true, silent = true, desc = "Tab" })
+vim.keymap.set("n", "<S-Tab>", ":normal! <<hhhh<CR>", { noremap = true, silent = true, desc = "Un-Tab" })
 
 vim.keymap.set("v", "<Tab>", ">gv", { noremap = true, silent = true, desc = "Tab" })
 vim.keymap.set("v", "<S-Tab>", "<gv", { noremap = true, silent = true, desc = "Un-Tab" })
@@ -92,7 +92,7 @@ vim.opt.numberwidth = 2
 vim.opt.signcolumn = "yes"
 
 -- Adjust the column width for signs (e.g., for linting or git signs)
-vim.api.nvim_set_hl(0, "SignColumn", { fg = "Grey" })
+vim.api.nvim_set_hl(0, "SignColumn", { fg = "silver" })
 
 -- Move to previously visited buffer;
 vim.keymap.set('n', '<leader><leader>', "<C-6>", { desc = "Alternate Buffer" })
@@ -117,19 +117,19 @@ vim.opt.guicursor = ""
 --vim.keymap.set('n', '<c-h>', ':wincmd h<CR>', {silent = true, desc="Navigate Left"})
 
 -- Augment Key Bindings
-vim.keymap.set({ 'n', 'v' }, '<leader>ac', ':Augment chat<CR>',
-    { silent = true, desc = "Send a chat message in normal and visual mode" })
-
-vim.keymap.set('n', '<leader>an', ':Augment chat-new<CR>', { silent = true, desc = "Start a new chat conversation" })
-
-vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>',
-    { silent = true, desc = "Toggle the chat panel visibility" })
-
-vim.keymap.set('i', '<c-y>', '<cmd>call augment#Accept()<cr>',
-    { silent = true, desc = "Use Ctrl-Y to accept a suggestion" })
-
-vim.keymap.set('i', '<cr>', '<cmd>call augment#Accept("\n")<cr>',
-    { silent = true, desc = "Use enter to accept a suggestion, falling back to a newline if no suggestion is available" })
+-- vim.keymap.set({ 'n', 'v' }, '<leader>ac', ':Augment chat<CR>',
+--     { silent = true, desc = "Send a chat message in normal and visual mode" })
+--
+-- vim.keymap.set('n', '<leader>an', ':Augment chat-new<CR>', { silent = true, desc = "Start a new chat conversation" })
+--
+-- vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>',
+--     { silent = true, desc = "Toggle the chat panel visibility" })
+--
+-- -- vim.keymap.set('i', '<c-y>', '<cmd>call augment#Accept()<cr>',
+-- --     { silent = true, desc = "Use Ctrl-Y to accept a suggestion" })
+--
+-- vim.keymap.set('i', '<cr>', '<cmd>call augment#Accept("\n")<cr>',
+--     { silent = true, desc = "Use enter to accept a suggestion, falling back to a newline if no suggestion is available" })
 
 vim.opt.wrap = true
 
@@ -145,7 +145,7 @@ vim.opt.ignorecase = true -- if you include mixed case in your search, assumes y
 
 vim.opt.cursorline = true
 
-vim.opt.background = "dark"
+vim.opt.background = "light"
 vim.opt.termguicolors = true
 
 -- backspace
@@ -165,4 +165,25 @@ vim.opt.autoread = true
 
 -- set the workspace path for augement ai
 vim.g.augment_workspace_folders = { '~/Desktop/Nuclear Codes/codesinc/mantis-free-LMS-SuperAdmin/',
-    '~/Desktop/Nuclear Codes/artspire-backend/', '~/.config/nvim/' }
+    '~/Desktop/Nuclear Codes/artspire-backend/', '~/.config/nvim/', '~/Desktop/Nuclear Codes/finances/' }
+
+
+vim.g.dbs = {
+    {
+        name = 'dev',
+        url = 'mysql://root:Anas%231234@localhost:3306/mysql'
+    },
+    {
+        name = 'production',
+        url = 'mysql://user:password@prodserver:3306/proddb'
+    },
+}
+
+
+vim.g.db_ui_adapter = 'mysql' -- or 'postgres' depending on your database
+
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        require("telescope.builtin").find_files()
+    end,
+})

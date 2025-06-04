@@ -157,3 +157,7 @@ PATH=~/.console-ninja/.bin:$PATH
 set -o vi
 . "$HOME/.cargo/env"
 . "/home/kratos/.deno/env"
+. "$HOME/.atuin/bin/env"
+
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+eval "$(atuin init bash)"
