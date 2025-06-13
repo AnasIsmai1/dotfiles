@@ -1,142 +1,120 @@
 return {
-    {
-        "hrsh7th/nvim-cmp",
-        event = { "InsertEnter" },
-        dependencies = {
-            -- "tailwind-tools",       -- for tailwind color highlight
-            -- "onsails/lspkind-nvim", -- for enhanced completion icons
-            "roobert/tailwindcss-colorizer-cmp.nvim",
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
-            "hrsh7th/nvim-cmp",
-            "saadparwaiz1/cmp_luasnip",
-            "rafamadriz/friendly-snippets",
-            "L3MON4D3/LuaSnip",
+    'saghen/blink.cmp',
+    dependencies = {
+        "rafamadriz/friendly-snippets",
+        "echasnovski/mini.icons",
+    },
+    version = '1.*',
+    opts = {
+        keymap = {
+            preset = 'default',
+            ['<CR>'] = { 'accept', 'fallback' },
+            ['<C-K>'] = { 'show_documentation' },
+            ['<Up>'] = { 'select_prev', 'fallback' },
+            ['<C-k>'] = { 'select_prev', 'fallback' },
+            ['<Down>'] = { 'select_next', 'fallback' },
+            ['<C-j>'] = { 'select_next', 'fallback' },
+            ['<C-space>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
         },
-        config = function()
-            local cmp = require("cmp")
-            local ls = require("luasnip")
-            local s = ls.snippet
-            local t = ls.text_node
-            local i = ls.insert_node
-            local f = ls.function_node
-            local fmt = require("luasnip.extras.fmt").fmt
-
-            ls.add_snippets("lua", {
-                s("fn", fmt("local function {}({})\n  {}\nend", { i(1, "name"), i(2, "args"), i(0, "body") })),
-            }, {
-                key = "lua_snippets",
-            })
-
-            ls.add_snippets("all", {
-                s("greet", {
-                    t("Hello, "), i(1, "name"), t("! Welcome to Neovim."), i(2, "message"),
-                }),
-            })
-
-            ls.add_snippets("cpp", {
-                s("bp", {
-                    t({
-                        "",
-                        "#include <iostream>",
-                        "",
-                        "using namespace std;",
-                        "",
-                        "int main() {",
-                        "    cout << \"Hello, World!\" <<  endl;",
-                        "    return 0;",
-                        "}"
-                    }), }),
-            })
-
-            -- Load snippets
-            require("luasnip.loaders.from_vscode").lazy_load()
-
-            -- Setup for cmdline completions
-            cmp.setup.cmdline("/", {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = {
-                    { name = "buffer" },
+        appearance = {
+            nerd_font_variant = 'mono',
+            window = {
+                completion = {
+                    border = "rounded",
+                    winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
                 },
-            })
-
-            cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = cmp.config.sources({
-                    { name = "path" },
-                }, {
-                    {
-                        name = 'cmdline',
-                        option = {
-                            ignore_cmds = { 'Man', '!' }
+                documentation = {
+                    border = "rounded",
+                    winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+                },
+            },
+        },
+        completion = {
+            documentation = {
+                auto_show = true,
+                auto_show_delay_ms = 500
+            },
+            menu = {
+                auto_show = true,
+                draw = {
+                    components = {
+                        kind_icon = {
+                            text = function(ctx)
+                                local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
+                                return kind_icon
+                            end,
+                            highlight = function(ctx)
+                                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                                return hl
+                            end,
+                        },
+                        kind = {
+                            highlight = function(ctx)
+                                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                                return hl
+                            end,
+                        },
+                        menu = {
+                            text = function(ctx)
+                                if ctx.source == "lsp" then
+                                    return "[LSP]"
+                                elseif ctx.source == "snippets" then
+                                    return "[Snip]"
+                                elseif ctx.source == "buffer" then
+                                    return "[Buf]"
+                                elseif ctx.source == "path" then
+                                    return "[Path]"
+                                else
+                                    return "[" .. ctx.source:sub(1, 1):upper() .. ctx.source:sub(2) .. "]"
+                                end
+                            end,
+                            highlight = "CmpMenu",
                         }
                     }
-                })
-            })
-
-            vim.keymap.set({ "i", "s" }, "<C-j>", function()
-                if ls.expand_or_jumpable() then
-                    ls.expand_or_jump()
-                end
-            end, { silent = true })
-
-            vim.keymap.set({ "i", "s" }, "<C-k>", function()
-                if ls.jumpable(-1) then
-                    ls.jump(-1)
-                end
-            end, { silent = true })
-
-            vim.keymap.set("i", "<C-l>", function()
-                if ls.choice_active() then
-                    ls.change_choice(1)
-                end
-            end, { silent = true })
-
-            -- Setup for insert mode completions
-            cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        require("luasnip").lsp_expand(args.body)
-                    end,
-                },
-                window = {
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
-                },
-                formatting = {
-                    -- format =
-                    --     lspkind.cmp_format({
-                    --         with_text = true, -- Show text with icons
-                    --         maxwidth = 50,    -- Adjust max width of completion item
-                    --         menu = {
-                    --             nvim_lsp = "[LSP]",
-                    --             luasnip = "[Snip]",
-                    --             path = "[Path]",
-                    --             buffer = "[Buffer]",
-                    --         },
-                    --     }),
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ["<C-j>"] = cmp.mapping.select_next_item(),
-                    ["<C-k>"] = cmp.mapping.select_prev_item(),
-                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                    ["<C-Space>"] = cmp.mapping.complete(),
-                    ["<C-e>"] = cmp.mapping.abort(),
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                }),
-                sources = cmp.config.sources({
-                    { name = "nvim_lsp" },
-                    { name = "luasnip" },
-                    { name = "path" },
-                    { name = "buffer" },
-                }),
-                experimental = {
-                    ghost_text = true -- This feature conflicts with copilot.vim's preview.
                 }
-            })
-        end,
+            },
+            ghost_text = {
+                enabled = true,
+                show_with_menu = true,
+                highlight = "CmpGhostText"
+            },
+        },
+        sources = {
+            default = { 'lsp', 'path', 'snippets', 'buffer' },
+        },
+        cmdline = {
+            enabled = true,
+            keymap = { preset = 'cmdline' },
+            sources = function()
+                local type = vim.fn.getcmdtype()
+                if type == '/' or type == '?' then return { 'buffer' } end
+                if type == ':' or type == '@' then return { 'cmdline' } end
+                return {}
+            end,
+            completion = {
+                trigger = {
+                    show_on_blocked_trigger_characters = {},
+                    show_on_x_blocked_trigger_characters = {},
+                },
+                list = {
+                    selection = {
+                        preselect = true,
+                        auto_insert = true,
+                    },
+                },
+                menu = { auto_show = false },
+                ghost_text = { enabled = true }
+            }
+        },
+        fuzzy = { implementation = "prefer_rust_with_warning" }
     },
+    opts_extend = { "sources.default" },
+    config = function(_, opts)
+        require('blink.cmp').setup(opts)
+        -- Custom highlights for a modern look (adjust to theme)
+        vim.api.nvim_set_hl(0, 'PmenuSel', { bg = '#313244', bold = true })
+        vim.api.nvim_set_hl(0, 'CmpMenu', { fg = '#6c7086', italic = true })
+        vim.api.nvim_set_hl(0, 'CmpGhostText', { fg = '#7f849c', italic = true })
+    end
+
 }

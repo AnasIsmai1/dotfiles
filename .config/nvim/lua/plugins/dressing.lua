@@ -4,6 +4,7 @@ return {
     config = function()
         require("dressing").setup({
             select = {
+                enabled = false,
                 backend = { "nui", "telescope", "fzf" }, -- choose which backend to use for select
                 nui = {
                     position = "50%",                    -- position for Nui-based selections

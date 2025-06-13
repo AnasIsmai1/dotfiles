@@ -4,7 +4,6 @@ return {
         event = { "BufReadPre", "BufReadPost" },
         dependencies = {
             "rcarriga/nvim-notify",
-            "MunifTanjim/nui.nvim",
         },
         config = function()
             local noice = require("noice")
@@ -64,17 +63,6 @@ return {
             }
         end,
     },
-    -- {
-    --   "rcarriga/nvim-notify",
-    --   opts = {
-    --     timeout = 3000,
-    --     background_color = "#000000",
-    --     -- render = "wrapped-compact",
-    --     render = "default",
-    --     stages = "slide",
-    --   },
-    --   -- vim.keymap.set('n', '<leader>dn', require("notify").dismiss(), { desc = "dismiss notifications" })
-    -- },
     {
         "echasnovski/mini.animate",
         event = { "InsertEnter", "BufReadPre" },
@@ -90,7 +78,6 @@ return {
     },
     {
         "echasnovski/mini.icons",
-        enabled = false,
         lazy = true,
         opts = {
             style = "glyph",

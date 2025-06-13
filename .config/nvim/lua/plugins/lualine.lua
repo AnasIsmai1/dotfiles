@@ -49,6 +49,18 @@ return {
                     -- { "fileformat" },
                     { "filetype" },
                 },
+                lualine_y = {
+                    {
+                        'lsp_status',
+                        icon = '', -- f013
+                        symbols = {
+                            spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' },
+                            done = '✓',
+                            separator = ' ',
+                        },
+                        ignore_lsp = {},
+                    }
+                }
             },
         })
     end,

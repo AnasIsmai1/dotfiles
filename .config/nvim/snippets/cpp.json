@@ -1,0 +1,15 @@
+{
+    "boilerplate": {
+        "prefix":"bp",
+        "body": [
+            "#include <iostream>",
+            "",
+            "using namespace std;",
+            "",
+            "int main() {",
+            "    cout << \"Hello, World!\" <<  endl;",
+            "    return 0;",
+            "}"
+        ]
+    }
+}

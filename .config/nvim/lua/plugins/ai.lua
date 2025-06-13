@@ -1,17 +1,5 @@
 return {
     {
-        'Exafunction/codeium.nvim',
-        enabled = false,
-        event = { "InsertEnter", "BufReadPre" },
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "hrsh7th/nvim-cmp",
-        },
-        config = function()
-            require("codeium").setup({})
-        end
-    },
-    {
         'augmentcode/augment.vim',
         enabled = false
     },
@@ -22,13 +10,14 @@ return {
 
         config = function()
             vim.g.copilot_filetypes = {
-                ["gitcommit"] = true,
-                ["markdown"] = true,   -- enable copilot for markdown files
-                ["text"] = true,       -- enable copilot for text files
-                ["html"] = true,       -- enable copilot for html files
-                ["javascript"] = true, -- enable copilot for javascript files
-                ["typescript"] = true, -- enable copilot for typescript files
-                ["lua"] = true,        -- enable copilot for lua files
+                ["*"] = false,        -- disable copilot for all file types by default
+                ["gitcommit"] = true, -- enable copilot for gitcommit files
+                ["markdown"] = true,  -- enable copilot for markdown files
+                -- ["text"] = true,       -- enable copilot for text files
+                -- ["html"] = true,       -- enable copilot for html files
+                -- ["javascript"] = true, -- enable copilot for javascript files
+                -- ["typescript"] = true, -- enable copilot for typescript files
+                -- ["lua"] = true,        -- enable copilot for lua files
             }
             vim.g.copilot_no_tab_map = true
             vim.api.nvim_set_keymap("i", "<C-l>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
