@@ -9,7 +9,7 @@ return {
         keymap = {
             preset = 'default',
             ['<CR>'] = { 'accept', 'fallback' },
-            ['<C-K>'] = { 'show_documentation' },
+            -- ['<C-K>'] = { 'show_documentation' },
             ['<Up>'] = { 'select_prev', 'fallback' },
             ['<C-k>'] = { 'select_prev', 'fallback' },
             ['<Down>'] = { 'select_next', 'fallback' },

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+targets=(
+  ".bashrc"
+  ".config/alacritty"
+  ".config/fastfetch"
+  ".config/i3"
+  ".config/kitty"
+  ".config/mc"
+  ".config/neofetch"
+  ".config/nvim"
+  ".config/polybar"
+  ".config/rofi"
+  ".config/sesh"
+  ".config/starship"
+  ".config/yazi"
+  ".gitconfig"
+  ".oh-my-zsh"
+  ".tmux.conf"
+  ".wezterm.lua"
+  ".zshrc"
+)
+
+for t in "${targets[@]}"; do
+  path="$HOME/$t"
+  if [ -e "$path" ] || [ -L "$path" ]; then
+    echo "Removing $path"
+    rm -rf "$path"
+  else
+    echo "Not found: $path"
+  fi
+done
+
+echo "Done. All listed files and directories have been removed."

@@ -177,6 +177,7 @@ alias install="sudo apt-get install"
 alias upgrade="sudo apt-get update && sudo apt-get upgrade -y"
 
 alias run=~/scripts/run
+alias x=~/scripts/x
 alias show=~/scripts/show
 alias updates=~/scripts/update
 
