@@ -60,12 +60,14 @@ vim.g.db_ui_adapter = 'mysql' -- or 'postgres' depending on your database
 -- local colors = require("config.colors").load_colors()
 vim.cmd(string.format([[highlight WinBar1 guifg=%s]], "#fff"))
 vim.cmd(string.format([[highlight WinBar2 guifg=%s]], "#7dcfff"))
--- Function to get the full path and replace the home directory with ~
+---Returns the full path of the current buffer, replacing the home directory with "~".
+---@return string The buffer's absolute path with the home directory abbreviated.
 local function get_winbar_path()
     local full_path = vim.fn.expand("%:p")
     return full_path:gsub(vim.fn.expand("$HOME"), "~")
 end
--- Function to get the number of open buffers using the :ls command
+---Returns the number of open buffers in the current Neovim session.
+---@return number The count of open buffers.
 local function get_buffer_count()
     local buffers = vim.fn.execute("ls")
     local count = 0
@@ -77,7 +79,7 @@ local function get_buffer_count()
     end
     return count
 end
--- Function to update the winbar
+---Updates the window bar to display the modified flag, buffer count, current file path with home directory replaced by "~", and the system hostname.
 local function update_winbar()
     local home_replaced = get_winbar_path()
     local buffer_count = get_buffer_count()
