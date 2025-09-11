@@ -43,6 +43,7 @@ truncation_symbol = '.../'
 
 [directory.substitutions]
 '~/Desktop/Nuclear Codes' = 'Nuclear Codes'
+'~/Desktop/Nuclear Codes/mercury_sols/report-master/report-master/' = 'Report Master'
 '~/anime' = "Anime"
 # '~' = "🏠"
 

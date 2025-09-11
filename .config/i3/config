@@ -21,6 +21,9 @@ exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 exec_always feh --bg-fill ~/Pictures/Wallpapers/split\ ken\ kaneki.png
 bindsym $mod+space exec rofi -show combi
+exec --no-startup-id systemctl --user stop pulseaudio.socket pulseaudio.service || true
+exec --no-startup-id systemctl --user disable pulseaudio.socket pulseaudio.service || true
+exec --no-startup-id systemctl --user enable --now pipewire.service pipewire-pulse.service wireplumber.service
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.

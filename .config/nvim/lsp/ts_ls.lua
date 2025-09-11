@@ -1,3 +1,7 @@
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.documentationFormat = { "markdown", "plaintext" }
+
 return {
     cmd = {
         "typescript-language-server",
@@ -8,6 +12,7 @@ return {
         "typescriptreact",
         "typescript.tsx",
         "javascript",
+        "javascript.js",
         "javascriptreact",
         "javascript.jsx"
     },
@@ -15,7 +20,7 @@ return {
         "package.json",
         "tsconfig.json",
         ".git"
-    }, -- not always respected, see below
+    },
     settings = {
         typescript = {
             format = { enable = false },
@@ -39,5 +44,6 @@ return {
     },
     init_options = {
         hostInfo = "neovim"
-    }
+    },
+    capabilities = capabilities,
 }

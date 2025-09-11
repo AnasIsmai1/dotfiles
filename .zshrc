@@ -2,7 +2,7 @@
 if [[ ":$FPATH:" != *":/home/kratos/.zsh/completions:"* ]]; then export FPATH="/home/kratos/.zsh/completions:$FPATH"; fi
 printf "\n"
 printf "\n"
-fastfetch
+# fastfetch
 #neofetch
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -48,7 +48,7 @@ HYPHEN_INSENSITIVE="true"
  zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
- zstyle ':omz:update' frequency 1
+ zstyle ':omz:update' frequency 3
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
@@ -139,6 +139,8 @@ alias cat="batcat"
 
 alias ls="eza --long --git --color=always --group-directories-first  --icons --no-user --no-time --no-permissions --no-filesize"
 
+alias grepo="git init && git add . && git commit -m 'Batman'"
+
 alias lg="la --grid"
 
 alias fzf="fzf --reverse"
@@ -182,13 +184,18 @@ alias show=~/scripts/show
 alias updates=~/scripts/update
 
 # alias sf="loc=$(echo -e | ls | gum filter) && cd $loc"
+#
+alias bot="ollama run bot"
 
 #eval `dircolors /home/kratos/.dir_colors/dircolors`
+
+# Start keychain and add your keys
+# eval "$(keychain --eval id_rsa id_ed25519_work)"
+eval "$(keychain --eval id_rsa )"
 
 printLine() {
   echo "\n";
 }
-
 
 eval "$(zoxide init --cmd cd zsh)" 
 
@@ -204,3 +211,8 @@ source ~/.profile
 PATH="$HOME/.cargo/bin/kanata:$PATH"
 alias doomt='terminal-doom/zig-out/bin/terminal-doom'
 . "/home/kratos/.deno/env"
+eval "$(atuin init zsh)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
