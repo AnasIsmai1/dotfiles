@@ -24,9 +24,9 @@ disabled = true
 
 ##Add the following below the file
 [battery]
-full_symbol = "🔋 "
-charging_symbol = "⚡️ "
-discharging_symbol = "💀 "
+full_symbol = "󰁹 "
+charging_symbol = " "
+discharging_symbol = "󰚌 "
 
 ##The display configuration option is used to define when the battery indicator should be shown (threshold) and what it looks like (style).
 [[battery.display]]

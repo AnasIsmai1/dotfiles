@@ -1,0 +1,57 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = AnasIsmai1
+	email = 174011704+AnasIsmai1@users.noreply.github.com
+	; name = mobeenikhtiar21
+    ; email = mobeenikhtiar2@gmail.com
+[core]
+	editor = nvim
+	compression = 9
+	whitespace = error
+	preloadindex = true
+	pager = delta
+	autocrlf = input
+[init]
+	defaultBranch = dev
+[status]
+	branch = true
+	showStash = true
+	showUntrackedFiles = all
+[interactive]
+	diffFilter = delta --color-only
+[add.interactive]
+	useBuiltin = false # required for git 2.37.0
+[delta]
+	navigate = true
+	side-by-side = true
+	light = false
+[merge]
+	conflictstyle = diff3
+[commit]
+	gpgSign = false
+	template = ~/.config/git/template
+[diff]
+	colorMoved = default
+; [credential "https://gist.github.com"]
+; 	helper =
+; 	helper = !/usr/bin/gh auth git-credential
+; [credential]
+; 	helper = 
+; 	helper = !/usr/bin/gh auth git-credential
+
+# --- Commented out previous SSH-based rewrites ---
+# [url "ssh://git@github.com/"]
+#	insteadOf = https://github.com/
+# [url "git@github.com:AnasIsmai1/"]
+#	insteadOf = "anas:"
+# [url "git@github.com:"]
+#	insteadOf = "gh:"
+
+# --- HTTPS rewrite rules for GitHub ---
+[url "https://github.com/"]
+	insteadOf = ssh://git@github.com/
+	insteadOf = git@github.com:

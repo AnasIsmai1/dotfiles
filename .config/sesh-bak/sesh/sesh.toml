@@ -1,0 +1,37 @@
+[[session]]
+name="dotfiles"
+path="~/dotfiles"
+startup_command = "v"
+
+[[session]]
+name="nvim"
+path="~/dotfiles/.config/nvim/"
+startup_command = "v"
+
+[[session]]
+name="Assignment"
+path= "~/Desktop/Anas/SEM-II/IP/assignments/"
+
+[[session]]
+name="tmux config"
+path = "~/"
+startup_command = "v .tmux.conf"
+
+[[session]]
+name="Anime"
+path = "~/anime/"
+startup_command = "tmux rename-window view && tmux neww && tmux rename-window download && clear && tmux swapw -t view"
+
+[[session ]]
+name="sesh config"
+path="~/.config/sesh/"
+startup_command="l"
+
+[[session]]
+name="React"
+path="~/Desktop/Nuclear Codes/react-practice/"
+startup_command="tmux rename-window host && tmux neww 'nvim'"
+
+[[session]]
+name="Real_Estate"
+path="~/Desktop/Nuclear Codes/codesinc/frontendzahrarealestate/"
