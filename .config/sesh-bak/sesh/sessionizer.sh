@@ -1,10 +1,9 @@
 #!/bin/bash
-# export PATH="$HOME/.cargo/bin:$PATH"
-sesh connect $(
+selected=$(
   sesh list -tz --icons | fzf-tmux -p 75%,65% \
     --ansi --reverse --no-sort --border-label ' sesh ' --prompt='⚡  ' \
     --header '  ^a all ^t tmux ^g config ^x zoxide ^d tmux kill ^f find ^r rename ^p preview ' \
-    --pointer=" " --marker=" " --color='pointer:#FF204E,marker:#FF204E' \
+    --pointer=" " --marker=" " --color='pointer:#FF204E,marker:#FF204E' \
     --bind 'tab:down,btab:up' \
     --bind 'ctrl-a:change-prompt(⚡  )+reload($HOME/go/bin/sesh list --icons)' \
     --bind 'ctrl-t:change-prompt(🪟 )+reload($HOME/go/bin/sesh list -t --icons)' \
@@ -15,3 +14,7 @@ sesh connect $(
     --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload($HOME/go/bin/sesh list --icons)' \
     --bind 'ctrl-r:execute(current=$(tmux display-message -p {}); name=$( echo "Input your new Name" | fzf --header "Current Name: $current"  --ansi --reverse --print-query --prompt="New name: ");    tmux rename-session -t {2..} $name )+reload($HOME/go/bin/sesh list --icons)'
 )
+
+if [[ -n "$selected" ]]; then
+  sesh connect "$selected"
+fi

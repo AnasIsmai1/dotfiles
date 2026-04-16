@@ -6,8 +6,6 @@
 [user]
 	name = AnasIsmai1
 	email = 174011704+AnasIsmai1@users.noreply.github.com
-	; name = mobeenikhtiar21
-    ; email = mobeenikhtiar2@gmail.com
 [core]
 	editor = nvim
 	compression = 9
@@ -55,3 +53,9 @@
 [url "https://github.com/"]
 	insteadOf = ssh://git@github.com/
 	insteadOf = git@github.com:
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

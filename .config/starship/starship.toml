@@ -1,76 +1,159 @@
-# Print a new line at the start of the prompt
-add_newline = true
+"$schema" = 'https://starship.rs/config-schema.json'
 
-format = """$directory
-$battery$character"""
+add_newline = false
+command_timeout = 500
 
-right_format = """$all"""
-command_timeout = 250
+format = """
+$directory\
+$git_branch\
+$git_status\
+$c\
+$golang\
+$java\
+$kotlin\
+$nodejs\
+$php\
+$python\
+$ruby\
+$rust\
+$zig\
+$docker_context\
+$nix_shell\
+$cmd_duration\
+$fill\
+$battery\
+$time\
+$line_break\
+$character"""
 
-# Replaces the default "❯" symbol in the prompt with "➜"
-[character]                             # The name of the module we are configuring is "character"
-# success_symbol = "[ ](bold green)"      # The "success_symbol" segment is being set to "➜" with the color "bold green"
-# error_symbol = "[ ](bold red)"      # The "success_symbol" segment is being set to "➜" with the color "bold green"
-# vicmd_symbol = "[ ](bold green)"
+# ── OS Icon ──────────────────────────────────────
+[os]
+disabled = false
+format = '[$symbol]($style) '
+style = "bold"
 
-[hostname]
-ssh_only = true
-style = 'bold dimmed blue'
+[os.symbols]
+Arch = "󰣇"
+Linux = ""
+Macos = ""
+Windows = "󰍲"
+Ubuntu = ""
+Fedora = ""
 
-# Disable the package module, hiding it from the prompt completely
-# It is enabled for testing purposes
-[package]
-disabled = true
-
-##Add the following below the file
-[battery]
-full_symbol = "󰁹 "
-charging_symbol = " "
-discharging_symbol = "󰚌 "
-
-##The display configuration option is used to define when the battery indicator should be shown (threshold) and what it looks like (style).
-[[battery.display]]
-threshold = 10
-style = "bold red"
-
-[[battery.display]]  # "bold yellow" style when capacity is between 10% and 30%
-threshold = 30
-style = "bold yellow"
-
+# ── Directory ────────────────────────────────────
 [directory]
-# home_symbol=""
-truncation_symbol = '.../'
+format = "[$path]($style)[$read_only]($read_only_style) "
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " 󰌾"
 
 [directory.substitutions]
-'~/Desktop/Nuclear Codes' = 'Nuclear Codes'
-'~/Desktop/Nuclear Codes/mercury_sols/report-master/report-master/' = 'Report Master'
-'~/anime' = "Anime"
-# '~' = "🏠"
+"~/Desktop/Nuclear Codes" = "Nuclear Codes"
+"mercury_sols" = " "
+"Projects" = "󰲋 "
+"repos" = " "
+".local" = "󰆼 "
+
+# ── Git ──────────────────────────────────────────
+[git_branch]
+symbol = " "
+format = '[$symbol$branch]($style) '
+style = "italic"
+
+[git_status]
+format = '[$all_status$ahead_behind]($style)'
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+conflicted = " "
+untracked = "? "
+modified = " "
+staged = " "
+stashed = "📦 "
+deleted = "✘ "
+renamed = "» "
+
+# ── Languages ────────────────────────────────────
+[c]
+symbol = " "
+format = '[$symbol($version)]($style) '
 
 [golang]
-format = '[ $version ](bold cyan)'
+symbol = " "
+format = '[$symbol($version)]($style) '
+
+[java]
+symbol = " "
+format = '[$symbol($version)]($style) '
+
+[kotlin]
+symbol = " "
+format = '[$symbol($version)]($style) '
 
 [nodejs]
-format = '[ $version ](bold green)'
-
-[python]
-format = '[ $version ](bold yellow)'
+symbol = " "
+format = '[$symbol($version)]($style) '
 
 [php]
-format = '[  $version ](bold purple)'
+symbol = " "
+format = '[$symbol($version)]($style) '
 
-[custom.cpp]
-# command = "echo  d=$(g++ --version | head -n ) d=${d#*)} && d=${d#* } && echo $d"
-command =  "gcc --version | head -n 1 | awk -F' ' '{print $NF}'"
-symbol = ' '
-style = 'bold blue'
-format = '[$symbol(v$output) ]($style)'
-detect_extensions = ['cpp']
+[python]
+symbol = " "
+format = '[$symbol($version)(\($virtualenv\))]($style) '
 
-[custom.zsh]
-description = 'Show current time'
-command = 'echo "  $(date +%H:%M) "'
-symbol = ''
-format = ' [$symbol($output) ]($style)'
-style = 'bold yellow'
-when = false
+[ruby]
+symbol = " "
+format = '[$symbol($version)]($style) '
+
+[rust]
+symbol = "🦀 "
+format = '[$symbol($version)]($style) '
+
+[zig]
+symbol = " "
+format = '[$symbol($version)]($style) '
+
+# ── Containers ───────────────────────────────────
+[docker_context]
+symbol = " "
+format = '[$symbol$context]($style) '
+
+[nix_shell]
+symbol = " "
+format = '[$symbol$state]($style) '
+
+# ── Command Duration ─────────────────────────────
+[cmd_duration]
+min_time = 500
+format = '[󱎫 $duration]($style) '
+
+# ── Fill ─────────────────────────────────────────
+[fill]
+symbol = " "
+
+# ── Right Side ───────────────────────────────────
+[battery]
+format = '[$symbol$percentage]($style) '
+
+[[battery.display]]
+threshold = 20
+discharging_symbol = "󱊡 "
+
+[[battery.display]]
+threshold = 50
+discharging_symbol = "󱊢 "
+
+[[battery.display]]
+threshold = 100
+discharging_symbol = "󱊣 "
+
+[time]
+disabled = false
+time_format = "%R"
+format = '[ $time]($style)'
+
+# ── Prompt Character ─────────────────────────────
+[character]
+success_symbol = "[❯](bold)"
+error_symbol = "[✗](bold red)"

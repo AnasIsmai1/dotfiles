@@ -1,3 +1,4 @@
+config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
 # This is the configuration file for Ghostty.
 #
 # This template file has been automatically created at the following
@@ -42,8 +43,7 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-theme = catppuccin-mocha
 window-decoration = none
-font-size = 16
+font-size = 12
 background-opacity = 0.8
 background-blur = true

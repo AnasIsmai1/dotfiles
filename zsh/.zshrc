@@ -1,7 +1,5 @@
 # Add deno completions to search path
 if [[ ":$FPATH:" != *":/home/kratos/.zsh/completions:"* ]]; then export FPATH="/home/kratos/.zsh/completions:$FPATH"; fi
-printf "\n"
-printf "\n"
 # fastfetch
 #neofetch
 
@@ -90,7 +88,7 @@ HYPHEN_INSENSITIVE="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git auto-notify zsh-autosuggestions zsh-syntax-highlighting web-search zsh-vi-mode zsh-histdb you-should-use)
+plugins=(git docker docker-compose dockolor auto-notify zsh-autosuggestions zsh-syntax-highlighting web-search zsh-vi-mode zsh-histdb you-should-use)
 
 ZVM_VI_INSERT_ESCAPE_BINDKEY=kj
 
@@ -189,11 +187,26 @@ alias bot="ollama run bot"
 
 alias cat="bat"
 
+alias pn="pnpm"
+alias px="pnpx"
+
+alias wisdom="python3 ~/github-tools/wisdom-tree/src/wisdom_tree/main.py"
+
+alias aula="wine '/home/kratos/.wine/drive_c/Program Files (x86)/AULA/F75/OemDrv.exe'"
+
 #eval `dircolors /home/kratos/.dir_colors/dircolors`
 
 # Start keychain and add your keys
 # eval "$(keychain --eval id_rsa id_ed25519_work)"
 # eval "$(keychain --eval id_rsa )"
+#
+function zcp() {
+ cp "$1" "$(zoxide query "$2")"
+}
+
+function zmv() {
+ mv "$1" "$(zoxide query "$2")"
+}
 
 printLine() {
   echo "\n";
@@ -206,7 +219,16 @@ eval "$(zoxide init --cmd cd zsh)"
 
 PATH=~/.console-ninja/.bin:$PATH
 
+export UV_THREADPOOL_SIZE=8
+export MAKEFLAGS="-j6"
+
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
 # Created by `pipx` on 2024-09-22 12:21:35
+export OMARCHY_PATH="$HOME/.local/share/omarchy"
+export PATH="$OMARCHY_PATH/bin:$PATH"
 export PATH="$PATH:/home/kratos/.local/bin"
 # source /home/kratos/.cargo/env
 # source ~/.profile
@@ -216,8 +238,29 @@ alias doomt='terminal-doom/zig-out/bin/terminal-doom'
 eval "$(atuin init zsh)"
 
 # export MANGOHUD=1
+#
+export NGROK_AUTHTOKEN="38VmgRwyIq8DVNoKS2zT9HViMfx_5fYRYPkzaqozX4TZQx1YP"
+export NODE_OPTIONS="--max-old-space-size=4096 --max-semi-space-size=1024"
+
+export SDL_VIDEODRIVER='wayland,x11,windows'
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-. "$HOME/.local/share/../bin/env"
+# . "$HOME/.local/share/../bin/env"
+
+# pnpm
+export PNPM_HOME="/home/kratos/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

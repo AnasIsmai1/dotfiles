@@ -1,0 +1,11 @@
+# Omarchy theme symlinks (machine-local theme state)
+.config/mako/config
+.config/btop/themes/current.theme
+.config/nvim/lua/plugins/theme.lua
+
+# Hyprland shaders (system-provided symlinks to /usr/share/aether/)
+.config/hypr/shaders/
+
+# Claude Code workspace-local settings
+.config/hypr/.claude/
+.config/nvim/.claude/
