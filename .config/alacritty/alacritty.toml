@@ -1,39 +1,21 @@
-import = [
-  "~/.config/alacritty/alacritty-theme/themes/catppuccin_mocha.toml"
-  # "~/.config/alacritty/alacritty-theme/themes/gruvbox.toml"
-]
+general.import = [ "~/.config/omarchy/current/theme/alacritty.toml" ]
 
 [env]
 TERM = "xterm-256color"
 
-[window]
-decorations = "none" 
-
-opacity = 0.95
-
-dynamic_title = false
-
-blur = true
-
-option_as_alt = "Both"
-
 [font]
-
+normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
+bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
+italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
 size = 9
 
-normal.family = "JetBrains Mono"
-normal.style = "Medium"
+[window]
+padding.x = 14
+padding.y = 14
+decorations = "None"
 
-bold.family = "JetBrains Mono"
-bold.style = "Bold"
-
-italic.family = "JetBrains Mono"
-italic.style = "Italic Medium"
-
-[selection]
-save_to_clipboard = true
-
-
-[cursor]
-
-style.shape = "Block"
+[keyboard]
+bindings = [
+{ key = "Insert", mods = "Shift", action = "Paste" },
+{ key = "Insert", mods = "Control", action = "Copy" }
+]
