@@ -239,7 +239,7 @@ eval "$(atuin init zsh)"
 
 # export MANGOHUD=1
 #
-export NGROK_AUTHTOKEN="38VmgRwyIq8DVNoKS2zT9HViMfx_5fYRYPkzaqozX4TZQx1YP"
+# export NGROK_AUTHTOKEN="your-token-here"  # set via: ngrok config add-authtoken <token>
 export NODE_OPTIONS="--max-old-space-size=4096 --max-semi-space-size=1024"
 
 export SDL_VIDEODRIVER='wayland,x11,windows'
