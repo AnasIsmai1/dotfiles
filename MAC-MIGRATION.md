@@ -2,18 +2,22 @@
 
 Inventory taken from the WSL Ubuntu 24.04 box on **2026-07-28**.
 
-## Order of operations
+## Quick version
 
 ```sh
-xcode-select --install                                    # compiler toolchain
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-git clone git@github.com:AnasIsmai1/dotfiles.git ~/dotfiles
-brew bundle --file=~/dotfiles/Brewfile                    # everything in the Brewfile
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-~/dotfiles/zsh/plugins-install.sh                         # oh-my-zsh plugins
-~/dotfiles/install.sh                                     # stow the configs
-# then the curl installers and language-manager packages below
+git clone https://github.com/AnasIsmai1/dotfiles.git ~/dotfiles
+~/dotfiles/mac-install.sh --dry-run     # read what it will do
+~/dotfiles/mac-install.sh
 ```
+
+`mac-install.sh` does everything in sections 1–6 below: Xcode CLT, Homebrew,
+the Brewfile, oh-my-zsh and its plugins, `install.sh` (stow), the curl-only
+installers, the npm/pipx/uv/nvm packages, and `chsh` to the brew zsh. It is
+idempotent, never aborts on a single failure, and prints the manual
+secret-dependent steps at the end.
+
+Clone over HTTPS, not SSH — the SSH host alias it needs (`github-personal`)
+only exists once the repo is stowed.
 
 Do **not** run `pkg-install.sh` — it is apt-only.
 
@@ -107,10 +111,33 @@ None of these are in the repo:
   `CLAUDE_CODE_OAUTH_TOKEN`. Recreate manually, `chmod 600`.
 - `~/.config/gh/hosts.yml` — gitignored. Recreate with `gh auth login` for both
   the `AnasIsmai1` and `AnasSledge` accounts.
-- `~/.ssh/github_personal`, `~/.ssh/github_work` — copy over out of band, then
-  `chmod 600`. `.gitconfig` signs commits with `github_personal.pub` and rewrites
-  `github.com` to the `github-personal` SSH host alias, so `~/.ssh/config` needs
-  that Host block too.
+### SSH
+
+`ssh/.ssh/config` **is** tracked and gets stowed to `~/.ssh/config`. It holds
+only the `github-personal` / `github-work` aliases — `.gitconfig` signs commits
+with `github_personal.pub` and rewrites `github.com` to that alias, so both
+machines need it.
+
+Its first line is `Include ~/.ssh/config.local`. That file is **not** tracked and
+holds every real host (main-hermes, tennis, mba — production IPs and root
+logins, which have no business in a public repo). Recreate it by hand:
+
+```sh
+chmod 700 ~/.ssh
+$EDITOR ~/.ssh/config.local && chmod 600 ~/.ssh/config.local
+```
+
+Private keys — `github_personal`, `github_work`, `id_ed25519`, `main-hermes`,
+`LightsailDefaultKey-*.pem` — copy out of band, never through this repo, then
+`chmod 600`. `ssh/.ssh/*` is gitignored apart from `config` so a stray `git add`
+cannot pick one up.
+
+Verify the split resolves the same on the new box:
+
+```sh
+ssh -G github-personal | grep -E '^(hostname|identityfile)'
+ssh -G main-hermes     | grep -E '^(hostname|user)'
+```
 
 ## 8. macOS-specific fixups after stowing
 
