@@ -12,8 +12,10 @@ if [[ ":$FPATH:" != *":/home/kratos/.zsh/completions:"* ]]; then export FPATH="/
 #
 # ZSH_THEME="powerlevel10k/powerlevel10k"
 
-eval "$(starship init zsh)"
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+  export STARSHIP_CONFIG=~/.config/starship/starship.toml
+fi
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -43,10 +45,10 @@ HYPHEN_INSENSITIVE="true"
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
 # zstyle ':omz:update' mode auto      # update automatically without asking
- zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+ zstyle ':omz:update' mode disabled  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
- zstyle ':omz:update' frequency 3
+ zstyle ':omz:update' frequency 0
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
@@ -156,6 +158,9 @@ alias poly=~/.config/polybar/launch_polybar.sh
 alias power=~/.config/rofi/rofi-powermenu.sh
 
 # alias history="histdb | fzf | awk '{for(i=4; i<=NF; i++) printf $i " "; print ""}' | pbcopy" 
+#
+
+alias cc="claude --allow-dangerously-skip-permissions"
 
 # TMUX
 alias td="tmux detach"
@@ -196,10 +201,12 @@ alias aula="wine '/home/kratos/.wine/drive_c/Program Files (x86)/AULA/F75/OemDrv
 
 #eval `dircolors /home/kratos/.dir_colors/dircolors`
 
-# Start keychain and add your keys
-# eval "$(keychain --eval id_rsa id_ed25519_work)"
-# eval "$(keychain --eval id_rsa )"
-#
+# Start keychain and load SSH key (prompts for passphrase once per boot,
+# then caches it across all terminals).
+if command -v keychain >/dev/null 2>&1; then
+  eval "$(keychain --eval --quiet --agents ssh github_personal github_work)"
+fi
+
 function zcp() {
  cp "$1" "$(zoxide query "$2")"
 }
@@ -234,12 +241,18 @@ export PATH="$PATH:/home/kratos/.local/bin"
 # source ~/.profile
 # PATH="$HOME/.cargo/bin/kanata:$PATH"
 alias doomt='terminal-doom/zig-out/bin/terminal-doom'
+
+# Sync ~/dotfiles/.wezterm.lua to the Windows side (WezTerm runs as a Windows app)
+export WEZTERM_WIN_CONFIG='/mnt/c/Users/Admin/.wezterm.lua'
+wezsync() { \cp -f ~/dotfiles/.wezterm.lua "$WEZTERM_WIN_CONFIG" && echo "synced -> $WEZTERM_WIN_CONFIG"; }
+wezedit() { ${EDITOR:-nvim} ~/dotfiles/.wezterm.lua && wezsync; }
 # . "/home/kratos/.deno/env"
-eval "$(atuin init zsh)"
+if command -v atuin >/dev/null 2>&1; then eval "$(atuin init zsh)"; fi
 
 # export MANGOHUD=1
 #
-# export NGROK_AUTHTOKEN="your-token-here"  # set via: ngrok config add-authtoken <token>
+# Machine-local secrets (gitignored): NGROK_AUTHTOKEN, CLAUDE_CODE_OAUTH_TOKEN, ...
+[ -f ~/.zsh_secrets ] && source ~/.zsh_secrets
 export NODE_OPTIONS="--max-old-space-size=4096 --max-semi-space-size=1024"
 
 export SDL_VIDEODRIVER='wayland,x11,windows'
@@ -259,8 +272,20 @@ esac
 
 
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+if command -v ng >/dev/null 2>&1; then source <(ng completion script); fi
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
+# bun completions
+[ -s "/home/kratos/.bun/_bun" ] && source "/home/kratos/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# OpenClaw Completion
+source "/home/kratos/.openclaw/completions/openclaw.zsh"
