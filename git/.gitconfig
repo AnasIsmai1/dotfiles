@@ -6,7 +6,7 @@
 [user]
 	name = AnasIsmai1
 	email = 174011704+AnasIsmai1@users.noreply.github.com
-	signingkey = /home/kratos/.ssh/github_personal.pub
+	signingkey = ~/.ssh/github_personal.pub
 [core]
 	editor = nvim
 	compression = 9
@@ -52,16 +52,18 @@
 
 [credential "https://github.com"]
 	helper = 
-	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
+	helper = !gh auth git-credential
 [gpg]
 	format = ssh
 [tag]
 	gpgsign = true
 [gpg "ssh"]
-	allowedSignersFile = /home/kratos/.config/git/allowed_signers
+	allowedSignersFile = ~/.config/git/allowed_signers
+# Route SSH github.com URLs through the github-personal alias so the right key
+# is used. Deliberately NOT rewriting https:// — doing so forces every HTTPS
+# clone through SSH, which hangs on a machine that has no key yet.
 [url "git@github-personal:"]
 	insteadOf = git@github.com:
-	insteadOf = https://github.com/
