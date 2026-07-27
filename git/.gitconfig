@@ -6,6 +6,7 @@
 [user]
 	name = AnasIsmai1
 	email = 174011704+AnasIsmai1@users.noreply.github.com
+	signingkey = /home/kratos/.ssh/github_personal.pub
 [core]
 	editor = nvim
 	compression = 9
@@ -30,7 +31,7 @@
 [merge]
 	conflictstyle = diff3
 [commit]
-	gpgSign = false
+	gpgsign = true
 	template = ~/.config/git/template
 [diff]
 	colorMoved = default
@@ -49,13 +50,18 @@
 # [url "git@github.com:"]
 #	insteadOf = "gh:"
 
-# --- HTTPS rewrite rules for GitHub ---
-[url "https://github.com/"]
-	insteadOf = ssh://git@github.com/
-	insteadOf = git@github.com:
 [credential "https://github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
+[gpg]
+	format = ssh
+[tag]
+	gpgsign = true
+[gpg "ssh"]
+	allowedSignersFile = /home/kratos/.config/git/allowed_signers
+[url "git@github-personal:"]
+	insteadOf = git@github.com:
+	insteadOf = https://github.com/
