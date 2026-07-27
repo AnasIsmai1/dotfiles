@@ -10,12 +10,13 @@ PLUGINS_DIR="$ZSH_CUSTOM/plugins"
 
 # name|repo_url
 PLUGINS=(
-  "zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions"
-  "zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting"
-  "zsh-vi-mode|https://github.com/jeffreytse/zsh-vi-mode"
-  "zsh-histdb|https://github.com/larkery/zsh-histdb"
-  "you-should-use|https://github.com/MichaelAquilina/zsh-you-should-use"
-  "auto-notify|https://github.com/MichaelAquilina/zsh-auto-notify"
+	"zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions"
+	"zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting"
+	"zsh-vi-mode|https://github.com/jeffreytse/zsh-vi-mode"
+	"zsh-histdb|https://github.com/larkery/zsh-histdb"
+	"you-should-use|https://github.com/MichaelAquilina/zsh-you-should-use"
+	"auto-notify|https://github.com/MichaelAquilina/zsh-auto-notify"
+	"dockolor|https://github.com/bouteillerAlan/dockolor"
 )
 
 ok=()
@@ -23,26 +24,26 @@ skipped=()
 failed=()
 
 for entry in "${PLUGINS[@]}"; do
-  name="${entry%%|*}"
-  url="${entry#*|}"
-  target="$PLUGINS_DIR/$name"
+	name="${entry%%|*}"
+	url="${entry#*|}"
+	target="$PLUGINS_DIR/$name"
 
-  if [ -d "$target" ]; then
-    echo "  [have] $name"
-    skipped+=("$name")
-    continue
-  fi
+	if [ -d "$target" ]; then
+		echo "  [have] $name"
+		skipped+=("$name")
+		continue
+	fi
 
-  echo "  [ .. ] cloning $name"
-  if git clone --depth=1 "$url" "$target" 2>/tmp/plugin-err.$$; then
-    echo "  [ ok ] $name"
-    ok+=("$name")
-  else
-    echo "  [fail] $name"
-    sed 's/^/         /' /tmp/plugin-err.$$ >&2
-    failed+=("$name")
-  fi
-  rm -f /tmp/plugin-err.$$
+	echo "  [ .. ] cloning $name"
+	if git clone --depth=1 "$url" "$target" 2>/tmp/plugin-err.$$; then
+		echo "  [ ok ] $name"
+		ok+=("$name")
+	else
+		echo "  [fail] $name"
+		sed 's/^/         /' /tmp/plugin-err.$$ >&2
+		failed+=("$name")
+	fi
+	rm -f /tmp/plugin-err.$$
 done
 
 echo
