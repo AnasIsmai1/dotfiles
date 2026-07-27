@@ -288,4 +288,4 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # OpenClaw Completion
-source "/home/kratos/.openclaw/completions/openclaw.zsh"
+[ -f ~/.openclaw/completions/openclaw.zsh ] && source ~/.openclaw/completions/openclaw.zsh
