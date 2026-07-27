@@ -67,12 +67,23 @@ elif [ "$DRY_RUN" -eq 1 ]; then
   echo "  [dry ] xcode-select --install"
 else
   # This opens a GUI dialog and returns immediately, so we poll rather than
-  # trusting the exit code.
+  # trusting the exit code. Bounded: if the user dismisses the dialog the loop
+  # would otherwise hang forever with no output.
   xcode-select --install >/dev/null 2>&1
-  echo "  Waiting for the Xcode CLT installer to finish (accept the dialog)..."
-  until xcode-select -p >/dev/null 2>&1; do sleep 10; done
-  echo "  [ ok ] xcode-clt"
-  ok+=("xcode-clt")
+  echo "  Accept the Xcode command line tools dialog. Waiting up to 30 min..."
+  waited=0
+  until xcode-select -p >/dev/null 2>&1 || [ "$waited" -ge 1800 ]; do
+    sleep 10
+    waited=$((waited + 10))
+    [ $((waited % 120)) -eq 0 ] && echo "    still waiting (${waited}s)..."
+  done
+  if xcode-select -p >/dev/null 2>&1; then
+    echo "  [ ok ] xcode-clt"; ok+=("xcode-clt")
+  else
+    echo "  [fail] xcode-clt — dialog not completed. Run 'xcode-select --install'" >&2
+    echo "         by hand, then re-run this script." >&2
+    failed+=("xcode-clt")
+  fi
 fi
 
 # ---- 2. Homebrew -------------------------------------------------------------

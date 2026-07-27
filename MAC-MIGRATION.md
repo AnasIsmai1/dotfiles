@@ -5,19 +5,27 @@ Inventory taken from the WSL Ubuntu 24.04 box on **2026-07-28**.
 ## Quick version
 
 ```sh
+xcode-select --install                  # do this FIRST — see below
 git clone https://github.com/AnasIsmai1/dotfiles.git ~/dotfiles
 ~/dotfiles/mac-install.sh --dry-run     # read what it will do
 ~/dotfiles/mac-install.sh
 ```
+
+**Why `xcode-select --install` comes first:** on a clean macOS install `git` is
+only a stub. The first `git` command pops the "install command line developer
+tools" dialog and then blocks until you accept it — so the clone looks hung when
+it is really waiting on a window that may be behind the terminal. Installing the
+tools up front avoids that. (`mac-install.sh` also handles this, but it can't
+run until the repo is cloned.)
+
+Clone over **HTTPS**, not SSH — the `github-personal` host alias only exists
+once `~/.ssh/config` is stowed and the private key is in place.
 
 `mac-install.sh` does everything in sections 1–6 below: Xcode CLT, Homebrew,
 the Brewfile, oh-my-zsh and its plugins, `install.sh` (stow), the curl-only
 installers, the npm/pipx/uv/nvm packages, and `chsh` to the brew zsh. It is
 idempotent, never aborts on a single failure, and prints the manual
 secret-dependent steps at the end.
-
-Clone over HTTPS, not SSH — the SSH host alias it needs (`github-personal`)
-only exists once the repo is stowed.
 
 Do **not** run `pkg-install.sh` — it is apt-only.
 
@@ -111,6 +119,7 @@ None of these are in the repo:
   `CLAUDE_CODE_OAUTH_TOKEN`. Recreate manually, `chmod 600`.
 - `~/.config/gh/hosts.yml` — gitignored. Recreate with `gh auth login` for both
   the `AnasIsmai1` and `AnasSledge` accounts.
+
 ### SSH
 
 `ssh/.ssh/config` **is** tracked and gets stowed to `~/.ssh/config`. It holds
