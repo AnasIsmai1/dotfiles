@@ -14,3 +14,8 @@ nvim/.config/nvim/.claude/
 gh/.config/gh/hosts.yml
 *.bak
 tmux-*.log
+
+# SSH: only the portable config is tracked. Keys, known_hosts and the
+# machine-local host list (~/.ssh/config.local) must never be committed.
+ssh/.ssh/*
+!ssh/.ssh/config

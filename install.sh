@@ -16,6 +16,8 @@ PACKAGES=(
   zsh
   tmux
   git
+  ssh
+  sesh
   # Desktop (Hyprland stack)
   hypr
   waybar
