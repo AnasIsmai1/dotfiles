@@ -9,3 +9,7 @@ hypr/.config/hypr/shaders/
 # Claude Code workspace-local settings
 hypr/.config/hypr/.claude/
 nvim/.config/nvim/.claude/
+
+# Secrets / machine-local credentials
+gh/.config/gh/hosts.yml
+*.bak
