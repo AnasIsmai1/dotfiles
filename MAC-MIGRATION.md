@@ -19,7 +19,17 @@ tools up front avoids that. (`mac-install.sh` also handles this, but it can't
 run until the repo is cloned.)
 
 Clone over **HTTPS**, not SSH — the `github-personal` host alias only exists
-once `~/.ssh/config` is stowed and the private key is in place.
+once `~/.ssh/config` is stowed and the private key is in place. Once the key is
+there, switch this repo's remote over so pushes use the personal account rather
+than whichever account `gh` happens to be logged in as:
+
+```sh
+git -C ~/dotfiles remote set-url origin git@github-personal:AnasIsmai1/dotfiles.git
+```
+
+Do this per repo. `.gitconfig` deliberately does **not** rewrite `https://`
+globally — that would drag every unrelated HTTPS clone through a key it has no
+reason to need.
 
 `mac-install.sh` does everything in sections 1–6 below: Xcode CLT, Homebrew,
 the Brewfile, oh-my-zsh and its plugins, `install.sh` (stow), the curl-only
