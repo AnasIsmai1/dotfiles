@@ -280,12 +280,16 @@ if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
-# bun completions
-[ -s "/home/kratos/.bun/_bun" ] && source "/home/kratos/.bun/_bun"
-
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
 
 # OpenClaw Completion
 [ -f ~/.openclaw/completions/openclaw.zsh ] && source ~/.openclaw/completions/openclaw.zsh
+
+# Composio CLI
+export COMPOSIO_INSTALL_DIR="$HOME/.composio"
+export PATH="$COMPOSIO_INSTALL_DIR:$PATH"
+
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
