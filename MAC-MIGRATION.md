@@ -67,16 +67,16 @@ the usual suspect — comment it out and install Docker Desktop by hand.
 
 | apt | on macOS |
 | --- | --- |
-| alacritty, kitty, google-chrome-stable, ngrok | brew casks (in Brewfile) |
+| alacritty, kitty, google-chrome-stable, ngrok | brew casks (in `Brewfile.casks`) |
 | mpv | `brew "mpv"` — a formula on macOS, not a cask |
-| docker-ce, docker-ce-cli, docker-buildx-plugin, docker-compose-plugin, containerd.io | `cask "docker-desktop"` |
+| docker-ce, docker-ce-cli, docker-buildx-plugin, docker-compose-plugin, containerd.io | `cask "docker-desktop"` (in `Brewfile.casks`) |
 | bat, btop, curl, gh, git, jq, rclone, stow, zoxide, zsh | brew formulae (in Brewfile) |
 | golang-go, openjdk-21-jdk, maven, pipx, python3-pip | brew: `go`, `openjdk@21`, `maven`, `pipx`, `python@3.14` |
 | postgresql, postgresql-client-17 | `brew "postgresql@17"` |
 | build-essential | `xcode-select --install` |
 | coreutils, findutils, grep, gzip, diffutils, util-linux | `brew install coreutils findutils grep gzip diffutils` (BSD versions ship by default) |
 | ani-cli | not in Homebrew; install from https://github.com/pystardust/ani-cli |
-| fonts-\* (freefont, ipafont, liberation, noto-color-emoji, unifont, wqy-zenhei, tlwg-loma) | mostly bundled with macOS; nerd fonts are in the Brewfile |
+| fonts-\* (freefont, ipafont, liberation, noto-color-emoji, unifont, wqy-zenhei, tlwg-loma) | mostly bundled with macOS; nerd fonts are in `Brewfile.casks` |
 | fcitx5, fcitx5-config-qt | skip — use the built-in macOS input sources |
 | waybar, mako-notifier, xvfb, ubuntu-wsl, ubuntu-minimal, base-files, init, login, procps, ncurses-\*, lib\*, dash, bash, hostname, file, ca-certificates, bsdutils, debianutils, xfonts-\* | Linux-only or OS-provided — skip |
 
@@ -127,7 +127,6 @@ before trusting either.
 On macOS, `./pkg-dump.sh --brewfile` also regenerates the Brewfile. It refuses
 to do that on Linux, where `brew bundle dump` emits no casks and would silently
 delete the cask and font sections.
-
 
 ```sh
 # npm globals
