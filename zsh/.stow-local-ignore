@@ -1,0 +1,10 @@
+# Files in this package that are repo tooling, not dotfiles. Without this stow
+# links them straight into $HOME (~/plugins-install.sh, ~/.zshrc.pre-zinit.bak).
+# NOTE: defining this file replaces stow's built-in default ignore list, so the
+# usual suspects are repeated here.
+plugins-install\.sh
+.*\.bak
+\.git
+\.gitignore
+README.*
+LICENSE.*
