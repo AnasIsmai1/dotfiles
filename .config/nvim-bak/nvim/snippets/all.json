@@ -1,9 +1,0 @@
-{
-    "hello": {
-        "prefix": "greeting",
-        "body": [
-            "Hello, from Anas Ismail! this is my Neovim Environment."
-        ]
-    }
-
-}
