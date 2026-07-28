@@ -96,6 +96,24 @@ Also present but already covered by Homebrew on macOS — do **not** curl these:
 
 ## 4. Language-manager packages
 
+The lists below are a snapshot. Before any machine move, refresh them:
+
+```sh
+./pkg-dump.sh          # rewrites packages.lock, then shows what drifted
+```
+
+`packages.lock` is the source of truth for what is actually installed — brew
+leaves and casks, apt manual, npm/pnpm/bun globals, pipx, uv tools, gem, go and
+cargo bins, nvm node versions, oh-my-zsh plugins, tpm plugins. Every manager
+gets a section even when empty, so "cargo: none" is recorded rather than merely
+absent. Diff it against the hand-written lists here and in `mac-install.sh`
+before trusting either.
+
+On macOS, `./pkg-dump.sh --brewfile` also regenerates the Brewfile. It refuses
+to do that on Linux, where `brew bundle dump` emits no casks and would silently
+delete the cask and font sections.
+
+
 ```sh
 # npm globals
 npm i -g docx pnpm
