@@ -31,7 +31,7 @@ Do this per repo. `.gitconfig` deliberately does **not** rewrite `https://`
 globally — that would drag every unrelated HTTPS clone through a key it has no
 reason to need.
 
-`mac-install.sh` does everything in sections 1–6 below: Xcode CLT, Homebrew,
+`mac-install.sh` does everything in sections 1–7 below: Xcode CLT, Homebrew,
 the Brewfile, oh-my-zsh and its plugins, `install.sh` (stow), the curl-only
 installers, the npm/pipx/uv/nvm packages, and `chsh` to the brew zsh. It is
 idempotent, never aborts on a single failure, and prints the manual
@@ -70,7 +70,7 @@ Run these after Homebrew:
 
 ```sh
 # Bun (JS runtime) — currently 1.3.14
-curl -fsSL https://bun.sh/install | bash
+curl -fsSL https://bun.com/install | bash
 
 # Claude Code — currently 2.1.220
 curl -fsSL https://claude.ai/install.sh | bash
@@ -80,10 +80,12 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 # Supabase CLI
 brew install supabase/tap/supabase
-
-# Composio CLI  (~/.composio, on PATH via .zshrc)
-curl -fsSL https://cli.composio.dev/install.sh | bash
 ```
+
+`~/.composio` has no standalone installer — it is provisioned by the Composio
+MCP integration inside Claude Code
+(`claude mcp add --transport http composio https://connect.composio.dev/mcp`).
+`.zshrc` puts it on PATH.
 
 Also present but already covered by Homebrew on macOS — do **not** curl these:
 `nvm`, `atuin`, `starship`, `doppler`, `sesh`, `tpm`.
@@ -121,7 +123,39 @@ vim-tmux-navigator.
 LazyVim. `nvim/.config/nvim/lazy-lock.json` pins every plugin — just open nvim
 and let lazy.nvim restore.
 
-## 7. Secrets — do these by hand, never commit
+## 7. Claude Code
+
+Tracked in the `claude` and `agents` stow packages:
+
+| what | where |
+| --- | --- |
+| `settings.json`, `CLAUDE.md`, `keybindings.json` | `claude/.claude/` |
+| `statusline-command.sh` | `claude/.claude/` — already cross-platform (env var → macOS Keychain → Linux creds file) |
+| 18 SEO subagent definitions | `claude/.claude/agents/` |
+| 14 custom skills that live directly in `~/.claude/skills` | `claude/.claude/skills/` |
+| 61 hand-written skills | `agents/.agents/skills/` |
+
+**Not** tracked, because it regenerates (~300 MB of plugin cache plus 1335
+marketplace skills): `plugins/cache`, `plugins/marketplaces`, and everything
+under `~/.claude/skills` that came from a marketplace. `settings.json` declares
+`extraKnownMarketplaces` and `enabledPlugins`, so Claude Code reinstalls them on
+first launch. `claude/manifests/` keeps a snapshot of `installed_plugins.json`,
+`known_marketplaces.json` and the antigravity skill list for reference.
+
+Also not tracked: `.credentials.json`, `settings.local.json`, and all session,
+telemetry, history and project state.
+
+Two things to know about the layout:
+
+- Both packages stow with `--no-folding`. Without it, stow would replace
+  `~/.claude/skills` with a symlink into this repo on a fresh machine, and every
+  marketplace skill installed afterwards would be written into the repo.
+- The hand-written skills exist once, in `~/.agents/skills`. `~/.claude/skills`
+  reaches them through relative symlinks (`../../.agents/skills/<name>`). Stow
+  restores the store but not those links — `mac-install.sh` recreates them.
+  It links all 61; three of them were not linked on the Linux box.
+
+## 8. Secrets — do these by hand, never commit
 
 None of these are in the repo:
 
@@ -158,7 +192,7 @@ ssh -G github-personal | grep -E '^(hostname|identityfile)'
 ssh -G main-hermes     | grep -E '^(hostname|user)'
 ```
 
-## 8. macOS-specific fixups after stowing
+## 9. macOS-specific fixups after stowing
 
 - `.zshrc` aliases `pbcopy`/`pbpaste` to `xclip` — macOS has these natively, so
   delete those two lines.

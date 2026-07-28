@@ -308,7 +308,7 @@ Still to do by hand — these need secrets and cannot be scripted:
 
   5. Open nvim once and let lazy.nvim restore from lazy-lock.json.
 
-  6. macOS fixups in .zshrc / .wezterm.lua — see MAC-MIGRATION.md section 8.
+  6. macOS fixups in .zshrc / .wezterm.lua — see MAC-MIGRATION.md section 9.
 
 MANUAL
 
