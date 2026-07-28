@@ -55,6 +55,28 @@ run() {
   fi
 }
 
+# run_tty <label> <command...> — same bookkeeping as run(), but the command
+# inherits the terminal instead of having its output captured. Use this for
+# anything slow or interactive: a captured command that asks for a password
+# shows no prompt and no progress, so the script looks hung when it is simply
+# waiting on you. Homebrew casks need sudo, so this matters.
+run_tty() {
+  local label="$1"; shift
+  if [ "$DRY_RUN" -eq 1 ]; then
+    echo "  [dry ] $label: $*"
+    ok+=("$label")
+    return 0
+  fi
+  echo "  --- $label: live output below ---"
+  if "$@"; then
+    echo "  [ ok ] $label"
+    ok+=("$label")
+  else
+    echo "  [fail] $label"
+    failed+=("$label")
+  fi
+}
+
 have() { command -v "$1" >/dev/null 2>&1; }
 
 note_skip() { echo "  [have] $1"; skipped+=("$1"); }
@@ -106,6 +128,10 @@ elif [ "$DRY_RUN" -eq 1 ]; then
   echo "  [dry ] install homebrew via the official script"
   BREW=/opt/homebrew/bin/brew
 else
+  # The official installer is interactive: it prints what it will do, waits for
+  # RETURN, then asks for your password. Say so, because an unexpected prompt
+  # scrolled off the top reads as a hang.
+  echo "  The Homebrew installer will ask you to press RETURN, then for your password."
   if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
     BREW=$([ -x /opt/homebrew/bin/brew ] && echo /opt/homebrew/bin/brew || echo /usr/local/bin/brew)
     echo "  [ ok ] homebrew"
@@ -127,9 +153,12 @@ if [ -z "$BREW" ]; then
   echo "  [skip] no brew on PATH"
   skipped+=("brewfile")
 else
-  # brew bundle keeps going past individual failures and reports at the end,
-  # which is exactly the behaviour we want here.
-  run "brewfile" "$BREW" bundle --file="$DOTFILES_DIR/Brewfile"
+  # By far the longest step: ~2GB of casks, several minutes even on fast wifi.
+  # It MUST keep the terminal — casks run pkg installers that ask for your
+  # password, and a captured prompt is invisible. brew bundle also keeps going
+  # past individual failures and reports at the end, which is what we want.
+  echo "  This is the long one. Casks will ask for your password."
+  run_tty "brewfile" "$BREW" bundle --file="$DOTFILES_DIR/Brewfile"
 fi
 
 # ---- 4. Stow the configs, oh-my-zsh and its plugins --------------------------
@@ -140,7 +169,7 @@ echo
 echo "==> Stow dotfiles + oh-my-zsh"
 # ~/.ssh must be 700 before anything lands in it, and stow won't set that.
 [ "$DRY_RUN" -eq 0 ] && { mkdir -p "$HOME/.ssh"; chmod 700 "$HOME/.ssh"; }
-run "stow" "$DOTFILES_DIR/install.sh"
+run_tty "stow" "$DOTFILES_DIR/install.sh"
 
 # .wezterm.lua sits at the repo root rather than in a stow package (the WSL
 # wezsync helper reads it from there), so link it by hand. On macOS WezTerm
@@ -203,7 +232,7 @@ curl_install claude claude  https://claude.ai/install.sh
 
 # Supabase CLI has a real tap on macOS — no curl-piping needed.
 if [ -n "$BREW" ] && ! have supabase; then
-  run "supabase" "$BREW" install supabase/tap/supabase
+  run_tty "supabase" "$BREW" install supabase/tap/supabase
 else
   have supabase && note_skip "supabase"
 fi
@@ -212,7 +241,7 @@ fi
 echo
 echo "==> npm / pipx / uv / nvm packages"
 
-if have npm;  then run "npm-globals" npm install -g docx pnpm; else skipped+=("npm-globals"); fi
+if have npm;  then run_tty "npm-globals" npm install -g docx pnpm; else skipped+=("npm-globals"); fi
 if have pipx; then run "pipx-graphifyy" pipx install graphifyy; else skipped+=("pipx-graphifyy"); fi
 if have uv;   then run "uv-nano-pdf" uv tool install nano-pdf; else skipped+=("uv-nano-pdf"); fi
 
