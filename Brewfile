@@ -32,6 +32,7 @@ brew "coreutils"         # macOS ships BSD userland; GNU tools live here
 brew "television"        # fuzzy finder TUI
 brew "btop"
 brew "rclone"
+brew "mpv"             # formula on macOS, not a cask
 
 # --- Git / GitHub ---
 brew "git"
@@ -77,9 +78,8 @@ cask "wezterm"           # primary terminal; config is ~/dotfiles/.wezterm.lua
 cask "ghostty"
 cask "alacritty"
 cask "kitty"
-cask "docker"
+cask "docker-desktop"
 cask "google-chrome"
-cask "mpv"
 cask "ngrok"
 
 # --- Fonts ---

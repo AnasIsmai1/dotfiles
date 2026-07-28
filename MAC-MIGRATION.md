@@ -52,14 +52,15 @@ Everything lives in [`Brewfile`](./Brewfile). Regenerate on the Mac later with
 
 | apt | on macOS |
 | --- | --- |
-| alacritty, kitty, mpv, google-chrome-stable, ngrok | brew casks (in Brewfile) |
-| docker-ce, docker-ce-cli, docker-buildx-plugin, docker-compose-plugin, containerd.io | `cask "docker"` (Docker Desktop) |
+| alacritty, kitty, google-chrome-stable, ngrok | brew casks (in Brewfile) |
+| mpv | `brew "mpv"` — a formula on macOS, not a cask |
+| docker-ce, docker-ce-cli, docker-buildx-plugin, docker-compose-plugin, containerd.io | `cask "docker-desktop"` |
 | bat, btop, curl, gh, git, jq, rclone, stow, zoxide, zsh | brew formulae (in Brewfile) |
 | golang-go, openjdk-21-jdk, maven, pipx, python3-pip | brew: `go`, `openjdk@21`, `maven`, `pipx`, `python@3.14` |
 | postgresql, postgresql-client-17 | `brew "postgresql@17"` |
 | build-essential | `xcode-select --install` |
 | coreutils, findutils, grep, gzip, diffutils, util-linux | `brew install coreutils findutils grep gzip diffutils` (BSD versions ship by default) |
-| ani-cli | `brew install ani-cli` |
+| ani-cli | not in Homebrew; install from https://github.com/pystardust/ani-cli |
 | fonts-\* (freefont, ipafont, liberation, noto-color-emoji, unifont, wqy-zenhei, tlwg-loma) | mostly bundled with macOS; nerd fonts are in the Brewfile |
 | fcitx5, fcitx5-config-qt | skip — use the built-in macOS input sources |
 | waybar, mako-notifier, xvfb, ubuntu-wsl, ubuntu-minimal, base-files, init, login, procps, ncurses-\*, lib\*, dash, bash, hostname, file, ca-certificates, bsdutils, debianutils, xfonts-\* | Linux-only or OS-provided — skip |
