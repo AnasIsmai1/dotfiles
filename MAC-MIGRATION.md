@@ -43,8 +43,23 @@ Do **not** run `pkg-install.sh` — it is apt-only.
 
 ## 1. Homebrew
 
-Everything lives in [`Brewfile`](./Brewfile). Regenerate on the Mac later with
-`brew bundle dump --file=~/dotfiles/Brewfile --force --describe`.
+Split in two on purpose:
+
+- [`Brewfile`](./Brewfile) — 46 formulae. Fast, no sudo, everything the shell needs.
+- [`Brewfile.casks`](./Brewfile.casks) — 12 GUI apps and fonts. Hundreds of MB
+  each, privileged installers, password prompts.
+
+`mac-install.sh` runs them in that order, so a stalled cask cannot cost you the
+command-line toolchain. `--skip-casks` defers the second file entirely:
+
+```sh
+./mac-install.sh --skip-casks
+# later, when you have time and patience:
+brew bundle --verbose --file=~/dotfiles/Brewfile.casks
+```
+
+If a cask does stall, `--verbose` names the entry it is on. `docker-desktop` is
+the usual suspect — comment it out and install Docker Desktop by hand.
 
 ## 2. apt packages (Linux side) and their Mac fate
 

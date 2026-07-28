@@ -11,18 +11,21 @@
 #   ./mac-install.sh              # do it
 #   ./mac-install.sh --dry-run    # print every command, change nothing
 #   ./mac-install.sh --skip-brew  # Homebrew already set up
+#   ./mac-install.sh --skip-casks # skip GUI apps and fonts (the slow half)
 
 set -u
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DRY_RUN=0
 SKIP_BREW=0
+SKIP_CASKS=0
 
 for arg in "$@"; do
   case "$arg" in
     --dry-run)    DRY_RUN=1 ;;
     --skip-brew)  SKIP_BREW=1 ;;
-    --help|-h)    sed -n '2,14p' "$0"; exit 0 ;;
+    --skip-casks) SKIP_CASKS=1 ;;
+    --help|-h)    sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "unknown flag: $arg (try --help)" >&2; exit 2 ;;
   esac
 done
@@ -153,12 +156,25 @@ if [ -z "$BREW" ]; then
   echo "  [skip] no brew on PATH"
   skipped+=("brewfile")
 else
-  # By far the longest step: ~2GB of casks, several minutes even on fast wifi.
-  # It MUST keep the terminal — casks run pkg installers that ask for your
-  # password, and a captured prompt is invisible. brew bundle also keeps going
-  # past individual failures and reports at the end, which is what we want.
-  echo "  This is the long one. Casks will ask for your password."
-  run_tty "brewfile" "$BREW" bundle --file="$DOTFILES_DIR/Brewfile"
+  # Formulae first: fast, no sudo, and everything the shell actually needs.
+  # HOMEBREW_NO_AUTO_UPDATE stops brew re-checking for updates before each
+  # install. --verbose names each package as it starts, so a stall is
+  # attributable to a specific entry instead of looking like a dead terminal.
+  export HOMEBREW_NO_AUTO_UPDATE=1
+  run_tty "brewfile" "$BREW" bundle --verbose --file="$DOTFILES_DIR/Brewfile"
+
+  # Casks second, and separately: hundreds of MB each, privileged installers,
+  # password prompts. A stall here no longer costs you the toolchain above.
+  if [ "$SKIP_CASKS" -eq 1 ]; then
+    echo "  [skip] casks (--skip-casks)"
+    skipped+=("casks")
+  else
+    echo
+    echo "  Casks next: GUI apps and fonts, ~2GB. Some will ask for your password."
+    echo "  Ctrl-C is safe here — rerun with --skip-casks to get everything else,"
+    echo "  then: brew bundle --verbose --file=~/dotfiles/Brewfile.casks"
+    run_tty "casks" "$BREW" bundle --verbose --file="$DOTFILES_DIR/Brewfile.casks"
+  fi
 fi
 
 # ---- 4. Stow the configs, oh-my-zsh and its plugins --------------------------

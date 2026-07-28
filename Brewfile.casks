@@ -1,0 +1,31 @@
+# macOS GUI apps and fonts. Split out of the main Brewfile on purpose.
+#
+#   brew bundle --file=~/dotfiles/Brewfile.casks
+#
+# Casks are the slow, failure-prone half of a Homebrew bootstrap: they download
+# hundreds of MB each, run pkg installers, and several ask for your password.
+# Keeping them separate means a stalled cask cannot block the command-line
+# toolchain in Brewfile, and `mac-install.sh --skip-casks` can defer them all.
+#
+# Fonts come last because they are the least urgent and the most numerous.
+
+# --- Terminals ---
+cask "wezterm"           # primary terminal; config is ~/dotfiles/.wezterm.lua
+cask "ghostty"
+cask "alacritty"
+cask "kitty"
+
+# --- Apps ---
+# docker-desktop is the big one: ~700MB and it runs a privileged installer that
+# will ask for your password. If a bootstrap ever stalls in this file, this is
+# the first entry to suspect — comment it out and install it by hand.
+cask "docker-desktop"
+cask "google-chrome"
+cask "ngrok"
+
+# --- Fonts ---
+cask "font-jetbrains-mono-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-meslo-lg-nerd-font"
+cask "font-fira-code-nerd-font"
+cask "font-caskaydia-cove-nerd-font"

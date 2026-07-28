@@ -5,6 +5,9 @@
 # omitted — `brew leaves` plus the handful of tools installed via apt on Linux
 # that have brew equivalents on macOS. Linux-only things (Hyprland, waybar,
 # mako, swayosd, fcitx5, xvfb) are intentionally absent.
+#
+# FORMULAE ONLY. GUI apps and fonts live in Brewfile.casks so that a slow or
+# stalled cask cannot block the command-line toolchain.
 
 tap "dopplerhq/doppler"
 tap "steipete/tap"
@@ -72,19 +75,3 @@ brew "depot"
 
 # --- AI tooling ---
 brew "opencode"
-
-# --- Casks (macOS GUI apps) ---
-cask "wezterm"           # primary terminal; config is ~/dotfiles/.wezterm.lua
-cask "ghostty"
-cask "alacritty"
-cask "kitty"
-cask "docker-desktop"
-cask "google-chrome"
-cask "ngrok"
-
-# --- Fonts ---
-cask "font-jetbrains-mono-nerd-font"
-cask "font-hack-nerd-font"
-cask "font-meslo-lg-nerd-font"
-cask "font-fira-code-nerd-font"
-cask "font-caskaydia-cove-nerd-font"
