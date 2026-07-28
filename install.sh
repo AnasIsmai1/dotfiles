@@ -132,6 +132,43 @@ for pkg in "${PACKAGES[@]}"; do
   fi
 done
 
+# ---- oh-my-zsh + custom plugins ----
+# Runs after stowing so the installer finds ~/.zshrc already in place. It is
+# told to keep that file and not to re-exec into zsh, otherwise it would either
+# overwrite the symlink we just made or hang here waiting on a subshell.
+echo
+echo ">> oh-my-zsh"
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  echo "  [have] oh-my-zsh"
+  skipped+=("oh-my-zsh")
+elif ! command -v zsh >/dev/null 2>&1; then
+  echo "  [skip] oh-my-zsh (zsh not installed — run ./pkg-install.sh first)"
+  skipped+=("oh-my-zsh")
+else
+  OMZ_URL="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
+  if RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL "$OMZ_URL")" >/dev/null 2>&1; then
+    echo "  [ ok ] oh-my-zsh"
+    ok+=("oh-my-zsh")
+  else
+    echo "  [fail] oh-my-zsh"
+    failed+=("oh-my-zsh")
+  fi
+fi
+
+echo ">> zsh-plugins"
+if [ ! -x "$DOTFILES_DIR/zsh/plugins-install.sh" ]; then
+  echo "  [skip] zsh-plugins (script missing or not executable)"
+  skipped+=("zsh-plugins")
+elif [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "  [skip] zsh-plugins (no oh-my-zsh to install into)"
+  skipped+=("zsh-plugins")
+elif "$DOTFILES_DIR/zsh/plugins-install.sh" | sed 's/^/  /'; then
+  ok+=("zsh-plugins")
+else
+  echo "  [fail] zsh-plugins"
+  failed+=("zsh-plugins")
+fi
+
 # ---- Summary ----
 echo
 echo "================ summary ================"

@@ -132,31 +132,12 @@ else
   run "brewfile" "$BREW" bundle --file="$DOTFILES_DIR/Brewfile"
 fi
 
-# ---- 4. oh-my-zsh + plugins --------------------------------------------------
+# ---- 4. Stow the configs, oh-my-zsh and its plugins --------------------------
+# install.sh owns all three: it stows first, then installs oh-my-zsh (so the
+# installer finds ~/.zshrc already symlinked and leaves it alone), then clones
+# the custom plugins. Don't duplicate that sequence here.
 echo
-echo "==> oh-my-zsh"
-if [ -d "$HOME/.oh-my-zsh" ]; then
-  note_skip "oh-my-zsh"
-elif [ "$DRY_RUN" -eq 1 ]; then
-  echo "  [dry ] install oh-my-zsh (unattended)"
-else
-  # RUNZSH=no stops the installer dropping us into a subshell and stalling here.
-  # KEEP_ZSHRC=yes stops it clobbering the .zshrc we are about to stow.
-  if RUNZSH=no KEEP_ZSHRC=yes sh -c \
-      "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
-    echo "  [ ok ] oh-my-zsh"; ok+=("oh-my-zsh")
-  else
-    echo "  [fail] oh-my-zsh"; failed+=("oh-my-zsh")
-  fi
-fi
-
-if [ -x "$DOTFILES_DIR/zsh/plugins-install.sh" ]; then
-  run "zsh-plugins" "$DOTFILES_DIR/zsh/plugins-install.sh"
-fi
-
-# ---- 5. Stow the configs -----------------------------------------------------
-echo
-echo "==> Stow dotfiles"
+echo "==> Stow dotfiles + oh-my-zsh"
 # ~/.ssh must be 700 before anything lands in it, and stow won't set that.
 [ "$DRY_RUN" -eq 0 ] && { mkdir -p "$HOME/.ssh"; chmod 700 "$HOME/.ssh"; }
 run "stow" "$DOTFILES_DIR/install.sh"
@@ -191,7 +172,7 @@ elif [ -d "$HOME/.agents/skills" ]; then
   ok+=("agent-skill-links")
 fi
 
-# ---- 6. Installers that aren't in any package manager ------------------------
+# ---- 5. Installers that aren't in any package manager ------------------------
 echo
 echo "==> curl installers"
 
@@ -227,7 +208,7 @@ else
   have supabase && note_skip "supabase"
 fi
 
-# ---- 7. Language-manager packages --------------------------------------------
+# ---- 6. Language-manager packages --------------------------------------------
 echo
 echo "==> npm / pipx / uv / nvm packages"
 
@@ -252,7 +233,7 @@ else
   echo "  [skip] nvm (not installed)"; skipped+=("nvm-node-24")
 fi
 
-# ---- 8. Default shell --------------------------------------------------------
+# ---- 7. Default shell --------------------------------------------------------
 echo
 echo "==> Default shell"
 BREW_PREFIX="$(brew --prefix 2>/dev/null)"
