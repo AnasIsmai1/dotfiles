@@ -19,3 +19,9 @@ tmux-*.log
 # machine-local host list (~/.ssh/config.local) must never be committed.
 ssh/.ssh/*
 !ssh/.ssh/config
+
+# Claude Code: track config and hand-written skills only. Credentials, machine
+# -local permissions and all session/telemetry state stay off git.
+claude/.claude/.credentials.json
+claude/.claude/settings.local.json
+.credentials.json

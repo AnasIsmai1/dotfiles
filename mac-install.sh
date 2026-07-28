@@ -161,6 +161,36 @@ echo "==> Stow dotfiles"
 [ "$DRY_RUN" -eq 0 ] && { mkdir -p "$HOME/.ssh"; chmod 700 "$HOME/.ssh"; }
 run "stow" "$DOTFILES_DIR/install.sh"
 
+# .wezterm.lua sits at the repo root rather than in a stow package (the WSL
+# wezsync helper reads it from there), so link it by hand. On macOS WezTerm
+# reads ~/.wezterm.lua directly — no Windows-side copy needed.
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo "  [dry ] ln -s $DOTFILES_DIR/.wezterm.lua ~/.wezterm.lua"
+elif [ -L "$HOME/.wezterm.lua" ]; then
+  note_skip "wezterm-config"
+else
+  [ -e "$HOME/.wezterm.lua" ] && mv "$HOME/.wezterm.lua" "$HOME/.wezterm.lua.bak"
+  run "wezterm-config" ln -s "$DOTFILES_DIR/.wezterm.lua" "$HOME/.wezterm.lua"
+fi
+
+# Hand-written skills live once in ~/.agents/skills (the agents package) and are
+# surfaced to Claude Code by symlink from ~/.claude/skills. Stow only restores
+# the store, not those links, so recreate any that are missing.
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo "  [dry ] link ~/.agents/skills/* into ~/.claude/skills/"
+elif [ -d "$HOME/.agents/skills" ]; then
+  mkdir -p "$HOME/.claude/skills"
+  linked=0
+  for s in "$HOME"/.agents/skills/*/; do
+    n="$(basename "$s")"
+    if [ ! -e "$HOME/.claude/skills/$n" ]; then
+      ln -s "../../.agents/skills/$n" "$HOME/.claude/skills/$n" && linked=$((linked + 1))
+    fi
+  done
+  echo "  [ ok ] agent-skill-links ($linked new)"
+  ok+=("agent-skill-links")
+fi
+
 # ---- 6. Installers that aren't in any package manager ------------------------
 echo
 echo "==> curl installers"
@@ -184,10 +214,11 @@ curl_install() {
   fi
 }
 
-curl_install bun    bun     https://bun.sh/install
+curl_install bun    bun     https://bun.com/install
 curl_install claude claude  https://claude.ai/install.sh
-# Composio drops its binary in ~/.composio, which .zshrc already puts on PATH.
-curl_install composio composio https://cli.composio.dev/install.sh
+# ~/.composio is provisioned by the Composio MCP integration inside Claude Code
+# (`claude mcp add --transport http composio https://connect.composio.dev/mcp`),
+# not by a standalone installer — nothing to run here.
 
 # Supabase CLI has a real tap on macOS — no curl-piping needed.
 if [ -n "$BREW" ] && ! have supabase; then
@@ -224,8 +255,9 @@ fi
 # ---- 8. Default shell --------------------------------------------------------
 echo
 echo "==> Default shell"
-BREW_ZSH="$(brew --prefix 2>/dev/null)/bin/zsh"
-if [ ! -x "$BREW_ZSH" ]; then
+BREW_PREFIX="$(brew --prefix 2>/dev/null)"
+BREW_ZSH="${BREW_PREFIX:-/nonexistent}/bin/zsh"
+if [ -z "$BREW_PREFIX" ] || [ ! -x "$BREW_ZSH" ]; then
   echo "  [skip] brew zsh not installed; keeping the system zsh"
   skipped+=("chsh")
 elif [ "$SHELL" = "$BREW_ZSH" ]; then
@@ -235,7 +267,15 @@ elif [ "$DRY_RUN" -eq 1 ]; then
 else
   grep -qxF "$BREW_ZSH" /etc/shells 2>/dev/null || \
     echo "$BREW_ZSH" | sudo tee -a /etc/shells >/dev/null
-  run "chsh" chsh -s "$BREW_ZSH"
+  # NOT wrapped in run(): chsh prompts for the login password, and run()
+  # swallows stdout/stderr into a variable, so the prompt would be invisible
+  # and the script would look hung.
+  echo "  chsh will ask for your login password:"
+  if chsh -s "$BREW_ZSH"; then
+    echo "  [ ok ] chsh"; ok+=("chsh")
+  else
+    echo "  [fail] chsh"; failed+=("chsh")
+  fi
 fi
 
 # ---- Summary -----------------------------------------------------------------
