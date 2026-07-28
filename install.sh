@@ -36,7 +36,17 @@ PACKAGES=(
   fontconfig
   environment.d
   btop
+  claude
+  agents
 )
+
+# ---- Packages that must NOT have their directories folded ----
+# By default stow symlinks a whole directory when the target doesn't exist yet.
+# For ~/.claude that is destructive: the repo tracks a handful of hand-written
+# skills, so folding would turn ~/.claude/skills into a symlink into this repo
+# and every marketplace skill installed later would be written here instead.
+# --no-folding creates real directories and only symlinks leaf files.
+NO_FOLD=(claude agents)
 
 # ---- stow install ----
 install_stow() {
@@ -62,6 +72,12 @@ backup_conflicts() {
   while IFS= read -r -d '' src; do
     local rel="${src#"$DOTFILES_DIR/$pkg/"}"
     local target="$HOME/$rel"
+    # If a parent directory is already a stow symlink (a "folded" package), the
+    # target path resolves back into this repo. Backing that up would rename our
+    # own tracked file to <name>.bak.<ts> — the repo eating itself. Skip those.
+    local real
+    real="$(cd "$(dirname "$target")" 2>/dev/null && pwd -P)" || real=""
+    case "$real" in "$DOTFILES_DIR"|"$DOTFILES_DIR"/*) continue ;; esac
     # We only care about real (non-symlink) files/dirs at the target.
     if [ -e "$target" ] && [ ! -L "$target" ]; then
       local bak="$target.bak.$TS"
@@ -79,7 +95,11 @@ stow_pkg() {
     return 1
   fi
   backup_conflicts "$pkg"
-  if stow --restow --target="$HOME" --dir="$DOTFILES_DIR" "$pkg" 2>/tmp/stow-err.$$; then
+  local opts=()
+  for nf in "${NO_FOLD[@]}"; do
+    [ "$nf" = "$pkg" ] && opts=(--no-folding)
+  done
+  if stow --restow "${opts[@]+"${opts[@]}"}" --target="$HOME" --dir="$DOTFILES_DIR" "$pkg" 2>/tmp/stow-err.$$; then
     echo "  [ ok ] $pkg"
     rm -f /tmp/stow-err.$$
     return 0
