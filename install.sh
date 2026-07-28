@@ -14,6 +14,7 @@ TS="$(date +%Y%m%d-%H%M%S)"
 # Shell & terminal
 PACKAGES=(
   zsh
+  starship
   tmux
   git
   ssh
@@ -25,6 +26,9 @@ PACKAGES=(
   walker
   swayosd
   mako
+  # Terminal emulators
+  alacritty
+  kitty
   # Editors & dev tools
   nvim
   lazygit
