@@ -1,0 +1,160 @@
+# packages.lock — regenerate with ./pkg-dump.sh
+# host: Linux x86_64
+
+## brew (leaves)
+act
+atuin
+bat
+cloudflare-cli4
+cloudflared
+depot
+doppler
+eza
+fd
+fzf
+gcc
+gh
+ghostscript
+git-delta
+hello
+keychain
+lazygit
+neovim
+nvm
+opencode
+pandoc
+poppler
+sesh
+starship
+tectonic
+television
+tpm
+uv
+worktrunk
+
+## brew (casks)
+(none)
+
+## apt (manual)
+alacritty
+ani-cli
+base-files
+bash
+bat
+bsdutils
+btop
+build-essential
+ca-certificates
+containerd.io
+coreutils
+curl
+dash
+debianutils
+diffutils
+docker-buildx-plugin
+docker-ce
+docker-ce-cli
+docker-compose-plugin
+fcitx5
+fcitx5-config-qt
+file
+findutils
+fonts-freefont-ttf
+fonts-ipafont-gothic
+fonts-liberation
+fonts-noto-color-emoji
+fonts-tlwg-loma-otf
+fonts-unifont
+fonts-wqy-zenhei
+gh
+git
+golang-go
+google-chrome-stable
+grep
+gzip
+hostname
+init
+jq
+kitty
+libattr1
+libfontconfig1
+libfreetype6
+login
+mako-notifier
+maven
+mpv
+ncurses-base
+ncurses-bin
+ngrok
+openjdk-21-jdk
+pipx
+postgresql
+postgresql-client-17
+procps
+python3-pip
+rclone
+stow
+ubuntu-minimal
+ubuntu-wsl
+util-linux
+waybar
+xfonts-cyrillic
+xfonts-scalable
+xvfb
+zoxide
+zsh
+
+## npm (global)
+docx
+npm
+pnpm
+
+## pnpm (global)
+(none)
+
+## bun (global)
+(none)
+
+## pipx
+graphifyy 0.9.10
+
+## uv (tools)
+nano-pdf v0.2.1
+
+## gem
+(not installed)
+
+## go ($GOPATH/bin)
+tour
+
+## cargo
+(not installed)
+
+## nvm (node versions)
+v24.14.0
+
+## oh-my-zsh (custom plugins)
+auto-notify
+dockolor
+example
+you-should-use
+zsh-autosuggestions
+zsh-histdb
+zsh-syntax-highlighting
+zsh-vi-mode
+
+## tmux (tpm plugins)
+catppuccin-tmux
+tmux-battery
+tmux-continuum
+tmux-cpu
+tmux-fzf
+tmux-fzf-url
+tmux-resurrect
+tmux-sensible
+tmux-sessionx
+tmux-yank
+tpm
+vim-tmux
+vim-tmux-navigator
+
