@@ -2,46 +2,23 @@ import type { AgentInfo, Register, SessionUsage } from 'claude-code'
 
 const PANE = 'agent-dash'
 const STALE_MS = 600000
-const STAGES = ['spec', 'build', 'test', 'review', 'verify', 'release']
-const ICON: Record<string, string> = { running: '●', waiting: '◐', pending: '○', idle: '◌', completed: '✓', failed: '✗', killed: '✗' }
+const COLS = ['spec', 'build', 'test', 'review', 'verify']
+// which column a role's agent sits in; anything else goes under its parent or the current stage
+const ROLE: Record<string, string> = { planner: 'spec', coder: 'build', tester: 'test', 'pr-reviewer': 'review', 'qa-tester': 'review', dave: 'verify' }
+const MARK: Record<string, string> = { running: '●', done: '✓', failed: '✗', stale: '?', idle: '◌', waiting: '◐', pending: '○' }
 
 // status.json and journals come from the repo/disk: strip control chars (terminal escapes) before drawing
 export const clean = (v: unknown) => (v == null ? '' : String(v)).replace(/[\x00-\x1f\x7f-\x9f]/g, '')
 
 type Status = { track?: string; engine?: string; stage?: string; round?: number; verdict?: string | null }
-type Group = { phase: string; agents: { label: string; state: 'running' | 'done' | 'failed' | 'stale' }[] }
-type Run = { id: string; groups: Group[] }
+type State = 'running' | 'done' | 'failed' | 'stale'
+type Group = { phase: string; agents: { label: string; state: State }[] }
+type Run = { id: string; name: string; groups: Group[] }
+type Card = { text: string; state: string }
+type Column = { stage: string; mark: 'done' | 'current' | 'todo'; cards: Card[] }
 
-// Lines of the tree: children under their parent, live ones first, finished ones dimmed.
-export function treeLines(agents: AgentInfo[], keepDone = 8) {
-  const live = (a: AgentInfo) => !['completed', 'failed', 'killed'].includes(a.status)
-  const done = agents.filter(a => !live(a)).slice(-keepDone)
-  const shown = agents.filter(a => live(a) || done.includes(a))
-  const ids = new Set(shown.map(a => a.id))
-  const kids = (parent?: string) => shown
-    .filter(a => (a.parentId && ids.has(a.parentId) ? a.parentId : undefined) === parent)
-    .sort((a, b) => Number(live(b)) - Number(live(a)))
-  const out: { text: string; dim: boolean }[] = []
-  const walk = (parent: string | undefined, pre: string) => {
-    const list = kids(parent)
-    list.forEach((a, i) => {
-      const last = i === list.length - 1
-      const name = clean(a.teammateId?.split('@')[0] ?? a.type)
-      out.push({ text: `${pre}${last ? '└─' : '├─'} ${ICON[a.status] ?? '·'} ${name} — ${clean(a.description)}`.slice(0, 160), dim: !live(a) })
-      walk(a.id, pre + (last ? '   ' : '│  '))
-    })
-  }
-  walk(undefined, '')
-  return out
-}
-
-export function stageLine(s: Status | null) {
-  if (!s || !s.stage) return null
-  s = { track: clean(s.track) || '?', engine: clean(s.engine) || '?', stage: clean(s.stage), round: Number(s.round) || 1, verdict: clean(s.verdict) }
-  const strip = STAGES.map(x => (x === s.stage ? `[${x}]` : x)).join(' › ')
-  const pre = STAGES.includes(s.stage) ? '' : `[${s.stage}] · `
-  return `ship ${s.track ?? '?'}/${s.engine ?? '?'}  ${pre}${strip}  r${s.round ?? 1}${s.verdict ? '  ' + s.verdict : ''}`
-}
+const agentState = (a: AgentInfo) => ({ completed: 'done', failed: 'failed', killed: 'failed' } as Record<string, string>)[a.status] ?? a.status
+const nameOf = (a: AgentInfo) => clean(a.teammateId?.split('@')[0] ?? a.type)
 
 export function workflowGroups(text: string, mtimes: Record<string, number>, now: number): Group[] {
   const phases = new Set<string>()
@@ -69,25 +46,80 @@ export function workflowGroups(text: string, mtimes: Record<string, number>, now
   }))
 }
 
-export const runningCount = (groups: Group[]) => groups.reduce((n, g) => n + g.agents.filter(a => a.state === 'running').length, 0)
+
+const count = (groups: Group[], st: State) => groups.reduce((n, g) => n + g.agents.filter(a => a.state === st).length, 0)
+export const runningCount = (groups: Group[]) => count(groups, 'running')
+
+export const bar = (done: number, total: number, cells = 6) => {
+  const n = total ? Math.round((Math.min(done, total) / total) * cells) : 0
+  return '▰'.repeat(n) + '▱'.repeat(cells - n)
+}
+
+export function header(s: Status | null) {
+  if (!s || !s.stage) return null
+  const verdict = clean(s.verdict)
+  return `ship · ${clean(s.track) || '?'}/${clean(s.engine) || '?'} · round ${Number(s.round) || 1}${verdict ? ` · ${verdict}` : ''}`
+}
+
+// One column per stage; agents grouped by role, repeats folded into "name ×n"
+export function boardColumns(s: Status | null, agents: AgentInfo[]): Column[] {
+  const stage = clean(s?.stage)
+  const at = COLS.indexOf(stage)
+  const finished = stage === 'release' || stage === 'done'
+  const colOf = new Map<string, string>()
+  const place = (a: AgentInfo): string => {
+    if (colOf.has(a.id)) return colOf.get(a.id)!
+    const parent = a.parentId ? agents.find(p => p.id === a.parentId) : undefined
+    const c = ROLE[nameOf(a)] ?? ROLE[a.type] ?? (parent ? place(parent) : at >= 0 ? stage : 'spec')
+    colOf.set(a.id, c)
+    return c
+  }
+  return COLS.map((col, i) => {
+    const mine = agents.filter(a => place(a) === col)
+    const byName = new Map<string, string[]>()
+    for (const a of mine) byName.set(nameOf(a), [...(byName.get(nameOf(a)) ?? []), agentState(a)])
+    const cards = [...byName].map(([name, states]) => {
+      const state = states.includes('running') ? 'running' : states.includes('failed') ? 'failed' : states.every(x => x === 'done') ? 'done' : states[0]
+      return { text: `${name}${states.length > 1 ? ` ×${states.length}` : ''} ${MARK[state] ?? '·'}`, state }
+    })
+    const mark = finished || (at >= 0 && i < at) ? 'done' : i === at ? 'current' : 'todo'
+    return { stage: col, mark, cards }
+  })
+}
+
+export function runLine(r: Run) {
+  const total = r.groups.reduce((n, g) => n + g.agents.length, 0)
+  const ended = count(r.groups, 'done') + count(r.groups, 'failed')
+  const tail = [count(r.groups, 'running') && `${count(r.groups, 'running')} running`, count(r.groups, 'failed') && `${count(r.groups, 'failed')} failed`].filter(Boolean).join(' · ')
+  return `${r.name}  ${bar(ended, total)}  ${ended}/${total} agents${tail ? `   ${tail}` : ''}`
+}
 
 export function usageLine(u: SessionUsage | null) {
   const parts = [
+    ...(u?.rateLimits ?? []).map(r => `${({ five_hour: '5h', seven_day: '7d' } as Record<string, string>)[r.kind] ?? r.kind} ${Math.round(r.percentUsed)}%`),
     u?.context?.percent != null ? `ctx ${Math.round(u.context.percent)}%` : '',
     u?.cost ? `$${u.cost.usd.toFixed(2)}` : '',
-    ...(u?.rateLimits ?? []).map(r => `${({ five_hour: '5h', seven_day: '7d' } as Record<string, string>)[r.kind] ?? r.kind} ${Math.round(r.percentUsed)}%`),
   ].filter(Boolean)
-  return parts.length ? parts.join(' · ') : null
+  return parts.length ? parts.join('  ') : null
 }
 
 const stageActive = (s: Status | null) => !!s?.stage && s.stage !== 'done'
 const wfRunning = (runs: Run[]) => runs.reduce((n, r) => n + runningCount(r.groups), 0)
 export const isActive = (s: Status | null, runs: Run[]) => stageActive(s) || wfRunning(runs) > 0
 
+// Band: one compact line, Tickloop-style
 export function bandLine(s: Status | null, agents: AgentInfo[], runs: Run[]) {
   if (!isActive(s, runs)) return null
   const n = agents.filter(a => a.status === 'running').length + wfRunning(runs)
-  return `${stageActive(s) ? stageLine(s) : 'workflow'}${n ? ` · ${n} running` : ''}`
+  const tail = n ? ` · ${n} running` : ''
+  if (stageActive(s)) {
+    const stage = clean(s!.stage)
+    const i = COLS.indexOf(stage)
+    return `ship ${clean(s!.track) || '?'}/${clean(s!.engine) || '?'}  ${bar(i < 0 ? 0 : i, COLS.length, COLS.length)}  ${stage}${tail}`
+  }
+  const r = runs.find(x => runningCount(x.groups) > 0)!
+  const total = r.groups.reduce((m, g) => m + g.agents.length, 0)
+  return `${r.name}  ${bar(count(r.groups, 'done') + count(r.groups, 'failed'), total)}${tail}`
 }
 
 const readStatus = async ($: any): Promise<Status | null> => {
@@ -96,9 +128,13 @@ const readStatus = async ($: any): Promise<Status | null> => {
 
 const readRuns = async ($: any): Promise<Run[]> => {
   const cwd = await $.session.cwd()
-  const base = `${await $.env.get('HOME')}/.claude/projects/${cwd.replace(/[^A-Za-z0-9]/g, '-')}/${await $.session.id()}/subagents/workflows`
+  const session = `${await $.env.get('HOME')}/.claude/projects/${cwd.replace(/[^A-Za-z0-9]/g, '-')}/${await $.session.id()}`
+  const base = `${session}/subagents/workflows`
   let dirs: { name: string; kind: string }[]
   try { dirs = await $.fs.list(base) } catch { return [] }
+  let scripts: { name: string }[] = []
+  try { scripts = await $.fs.list(`${session}/workflows/scripts`) } catch {}
+  const nameFor = (id: string) => clean(scripts.find(f => f.name.endsWith(`-${id}.js`))?.name.slice(0, -(id.length + 4)) || id)
   const now = await $.clock.now()
   const found: { id: string; mtime: number; mtimes: Record<string, number> }[] = []
   for (const d of dirs.filter(d => d.kind === 'dir')) {
@@ -119,13 +155,14 @@ const readRuns = async ($: any): Promise<Run[]> => {
     if (runs.length === 2) break
     try {
       const groups = workflowGroups(await $.fs.read(`${base}/${r.id}/journal.jsonl`), r.mtimes, now)
-      if (groups.length) runs.push({ id: r.id, groups })
+      if (groups.length) runs.push({ id: r.id, name: nameFor(r.id), groups })
     } catch {}
   }
   return runs
 }
 
 let wasActive = false
+const COLOR: Record<string, string> = { running: 'green', failed: 'red', idle: 'yellow', waiting: 'yellow' }
 
 export const register: Register = on => {
   let timer: { cancel: () => void } | null = null
@@ -152,28 +189,42 @@ export const register: Register = on => {
     const [s, agents, runs, usage] = await Promise.all([
       readStatus($), $.agent.list(), readRuns($), $.session.usage().catch(() => null),
     ])
-    const stage = stageLine(s)
-    const lines = treeLines(agents)
+    const head = header(s)
     const u = usageLine(usage)
-    if (!stage && !lines.length && !runs.length && !u) return <Text dimColor>idle</Text>
-    const mark = { running: '●', done: '✓', failed: '✗', stale: '?' }
+    const width = Math.max(40, (e.props as any)?.bodyColumns ?? 80)
+    const rule = <Text dimColor>{'─'.repeat(width)}</Text>
+    if (!head && !runs.length && !agents.length) return <Text dimColor>{`no active runs${u ? `   ${u}` : ''}`}</Text>
+    const cols = head || agents.length ? boardColumns(s, agents) : []
+    const colW = Math.floor(width / COLS.length)
     return (
       <Box flexDirection="column">
-        {stage && <Text color="cyan">{stage}</Text>}
-        {lines.length > 0 && <Text bold>◆ lead (this session)</Text>}
-        {lines.map(l => <Text dimColor={l.dim}>{'   ' + l.text}</Text>)}
-        {runs.map(r => (
-          <Box flexDirection="column">
-            <Text bold>{`${clean(r.id)}  ${runningCount(r.groups)} running`}</Text>
-            {r.groups.map(g => (
-              <Box flexDirection="column">
-                <Text>{'  ' + g.phase}</Text>
-                {g.agents.map(a => <Text dimColor={a.state === 'done' || a.state === 'stale'}>{`    ${mark[a.state]} ${a.label}`.slice(0, 160)}</Text>)}
+        <Box flexDirection="row" justifyContent="space-between">
+          <Text bold color="cyan">{head ?? 'agents'}</Text>
+          {u && <Text dimColor>{u}</Text>}
+        </Box>
+        {cols.length > 0 && rule}
+        {cols.length > 0 && (
+          <Box flexDirection="row">
+            {cols.map(c => (
+              <Box flexDirection="column" width={colW}>
+                <Text bold={c.mark === 'current'} color={c.mark === 'current' ? 'cyan' : undefined} dimColor={c.mark === 'todo'} wrap="truncate-end">
+                  {`${c.stage.toUpperCase()}${c.mark === 'done' ? ' ✓' : c.mark === 'current' ? ' ●' : ''}`}
+                </Text>
+                {c.cards.length === 0 && <Text dimColor>·</Text>}
+                {c.cards.map(k => <Text color={COLOR[k.state]} dimColor={k.state === 'done' || k.state === 'stale'} wrap="truncate-end">{k.text}</Text>)}
               </Box>
             ))}
           </Box>
+        )}
+        {runs.length > 0 && rule}
+        {runs.map(r => (
+          <Box flexDirection="column">
+            <Text wrap="truncate-end"><Text dimColor>workflow  </Text>{runLine(r)}</Text>
+            {r.groups.flatMap(g => g.agents.filter(a => a.state === 'running' || a.state === 'failed')).slice(0, 4).map(a => (
+              <Text color={COLOR[a.state]} wrap="truncate-end">{`  ${MARK[a.state]} ${a.label}`}</Text>
+            ))}
+          </Box>
         ))}
-        {u && <Text dimColor>{u}</Text>}
       </Box>
     )
   })
