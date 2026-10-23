@@ -1,5 +1,5 @@
 import { expect, mock, test } from 'claude-code/testing'
-import { bandLine, isActive, stageLine, treeLines, usageLine, workflowGroups } from './register'
+import { bandLine, clean, isActive, stageLine, treeLines, usageLine, workflowGroups } from './register'
 
 const a = (id: string, status: string, parentId?: string, teammateId?: string) =>
   ({ id, status, parentId, teammateId, type: id, description: `job ${id}` }) as any
@@ -193,4 +193,13 @@ test('runs: newest 2 non-empty by journal mtime; skips no-journal, empty and unr
   expect(await ui.find({ type: 'Text', text: /^d_old/ })).toBeTruthy()
   for (const gone of [/^a_launched/, /^c_bad/, /^e_older/, /^f_nojournal/]) expect(await ui.find({ type: 'Text', text: gone })).toBeFalsy()
   await ui.unmount()
+})
+
+test('strips terminal escapes from status, journal and agent text', () => {
+  const ESC = '\x1b]0;pwned\x07\x1b[2J'
+  expect(clean(`a${ESC}b\x9b`)).toBe('a]0;pwned[2Jb')
+  expect(stageLine({ track: `t${ESC}`, engine: 'e', stage: 'build', verdict: `SHIP${ESC}` })).not.toMatch(/[\x00-\x1f\x7f-\x9f]/)
+  const g = workflowGroups(`{"type":"started","agentId":"z","phase":"P\\u001b[31m","label":"L\\u0007"}`, { z: NOW }, NOW)
+  expect(g[0].phase + g[0].agents[0].label).not.toMatch(/[\x00-\x1f\x7f-\x9f]/)
+  expect(treeLines([{ ...a('x', 'running'), description: `d${ESC}` }])[0].text).not.toMatch(/[\x00-\x1f\x7f-\x9f]/)
 })

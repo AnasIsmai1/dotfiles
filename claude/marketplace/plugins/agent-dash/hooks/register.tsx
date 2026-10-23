@@ -5,6 +5,9 @@ const STALE_MS = 600000
 const STAGES = ['spec', 'build', 'test', 'review', 'verify', 'release']
 const ICON: Record<string, string> = { running: '●', waiting: '◐', pending: '○', idle: '◌', completed: '✓', failed: '✗', killed: '✗' }
 
+// status.json and journals come from the repo/disk: strip control chars (terminal escapes) before drawing
+export const clean = (v: unknown) => (v == null ? '' : String(v)).replace(/[\x00-\x1f\x7f-\x9f]/g, '')
+
 type Status = { track?: string; engine?: string; stage?: string; round?: number; verdict?: string | null }
 type Group = { phase: string; agents: { label: string; state: 'running' | 'done' | 'failed' | 'stale' }[] }
 type Run = { id: string; groups: Group[] }
@@ -23,8 +26,8 @@ export function treeLines(agents: AgentInfo[], keepDone = 8) {
     const list = kids(parent)
     list.forEach((a, i) => {
       const last = i === list.length - 1
-      const name = a.teammateId?.split('@')[0] ?? a.type
-      out.push({ text: `${pre}${last ? '└─' : '├─'} ${ICON[a.status] ?? '·'} ${name} — ${a.description}`.slice(0, 160), dim: !live(a) })
+      const name = clean(a.teammateId?.split('@')[0] ?? a.type)
+      out.push({ text: `${pre}${last ? '└─' : '├─'} ${ICON[a.status] ?? '·'} ${name} — ${clean(a.description)}`.slice(0, 160), dim: !live(a) })
       walk(a.id, pre + (last ? '   ' : '│  '))
     })
   }
@@ -34,6 +37,7 @@ export function treeLines(agents: AgentInfo[], keepDone = 8) {
 
 export function stageLine(s: Status | null) {
   if (!s || !s.stage) return null
+  s = { track: clean(s.track) || '?', engine: clean(s.engine) || '?', stage: clean(s.stage), round: Number(s.round) || 1, verdict: clean(s.verdict) }
   const strip = STAGES.map(x => (x === s.stage ? `[${x}]` : x)).join(' › ')
   const pre = STAGES.includes(s.stage) ? '' : `[${s.stage}] · `
   return `ship ${s.track ?? '?'}/${s.engine ?? '?'}  ${pre}${strip}  r${s.round ?? 1}${s.verdict ? '  ' + s.verdict : ''}`
@@ -48,9 +52,9 @@ export function workflowGroups(text: string, mtimes: Record<string, number>, now
     if (!o || typeof o !== 'object' || typeof o.agentId !== 'string') continue
     if (o.type === 'started') {
       if (info.has(o.agentId)) continue
-      const phase = o.phase || '(no phase)'
+      const phase = clean(o.phase) || '(no phase)'
       phases.add(phase)
-      info.set(o.agentId, { phase, label: o.label || o.agentId, end: null })
+      info.set(o.agentId, { phase, label: clean(o.label || o.agentId), end: null })
     } else if (o.type === 'result' || o.type === 'failed') {
       const a = info.get(o.agentId)
       if (a && !a.end) a.end = o.type === 'result' ? 'done' : 'failed'
@@ -160,7 +164,7 @@ export const register: Register = on => {
         {lines.map(l => <Text dimColor={l.dim}>{'   ' + l.text}</Text>)}
         {runs.map(r => (
           <Box flexDirection="column">
-            <Text bold>{`${r.id}  ${runningCount(r.groups)} running`}</Text>
+            <Text bold>{`${clean(r.id)}  ${runningCount(r.groups)} running`}</Text>
             {r.groups.map(g => (
               <Box flexDirection="column">
                 <Text>{'  ' + g.phase}</Text>
