@@ -88,7 +88,7 @@ Report the verdict, the tests (passed, planted N/3, rounds), the QA gate, and th
 1. `git switch -c <fix|feat|refactor>/<slug>`, unless you're already on a non-default branch.
 2. Stage only the paths listed in `.pipeline/changes.md` (plus their test files). Never stage `.pipeline/`.
 3. Commit. Guard the subject with `[ ${#subj} -le 50 ]`. Follow CLAUDE.md's Git rules: no co-author line and no "Generated with" line.
-4. Run `git log -1 --format=%B | grep -i claude`. It must print nothing; if it does, amend.
+4. Run `git log -1 --format=%B | grep -iE "co-authored-by|generated (with|by)|claude code|anthropic"`. It must print nothing; if it does, amend. (File names like CLAUDE.md are fine.)
 5. For **branch + commit + PR**: `git push -u origin HEAD`, then `gh pr create --title "$subj" --body-file -`. The body has: summary, acceptance criteria as checkboxes, tests (passed, planted N/3, rounds), QA gate, and confirmed findings plus how many were dropped. No Claude mention. If there's no remote or no `gh`, stop after the commit.
 6. **Never merge.** Set the stage to `done`.
 7. Save one line to this project's auto-memory: the goal, the PR URL (or the commit hash), and the verdict.
