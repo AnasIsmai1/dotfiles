@@ -1,0 +1,13 @@
+{
+  "name": "nas-local",
+  "owner": {
+    "name": "NAS"
+  },
+  "plugins": [
+    {
+      "name": "agent-dash",
+      "source": "./plugins/agent-dash",
+      "description": "Agent dashboard: /dash pane (ship stage, agent tree, workflow runs, context/cost) plus a 1-line band while a run is active"
+    }
+  ]
+}
